@@ -71,8 +71,10 @@ public class StationServiceImpl implements StationService {
                 .url(URL)
                 .build();
 
-        Response response = CLIENT.newCall(request).execute();
-        ResponseBody responseBody = Objects.requireNonNull(response.body());
+        ResponseBody responseBody;
+        try (Response response = CLIENT.newCall(request).execute()) {
+            responseBody = Objects.requireNonNull(response.body());
+        }
 
         Stations stations = OBJECT_MAPPER.readValue(responseBody.string(), Stations.class);
 
