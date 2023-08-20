@@ -2,17 +2,13 @@ package com.github.thibstars.btsd.desktop;
 
 import com.github.thibstars.btsd.irail.client.StationService;
 import com.github.thibstars.btsd.irail.client.StationServiceImpl;
-import com.github.thibstars.btsd.irail.model.Station;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.io.IOException;
-import java.util.Set;
 import javax.swing.JFrame;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.ListModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableModel;
 
