@@ -26,15 +26,17 @@ import org.jetbrains.annotations.NotNull;
  */
 public class StationServiceImpl implements StationService {
 
-    private static final OkHttpClient CLIENT = new OkHttpClient();
-
     private static final String URL = "https://api.irail.be/stations?format=json&lang=en";
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private final OkHttpClient client;
+
+    private final ObjectMapper objectMapper;
 
     private final LoadingCache<String, Station> cache;
 
-    public StationServiceImpl() {
+    public StationServiceImpl(OkHttpClient client, ObjectMapper objectMapper) {
+        this.client = client;
+        this.objectMapper = objectMapper;
         CacheLoader<String, Station> loader = new CacheLoader<>() {
             @NotNull
             @Override
@@ -68,16 +70,16 @@ public class StationServiceImpl implements StationService {
         return new HashSet<>(cache.asMap().values());
     }
 
-    private static Set<Station> fetchStations() throws IOException {
+    private Set<Station> fetchStations() throws IOException {
         Request request = new Request.Builder()
                 .url(URL)
                 .build();
 
         ResponseBody responseBody;
         Stations stations;
-        try (Response response = CLIENT.newCall(request).execute()) {
+        try (Response response = client.newCall(request).execute()) {
             responseBody = Objects.requireNonNull(response.body());
-            stations = OBJECT_MAPPER.readValue(responseBody.string(), Stations.class);
+            stations = objectMapper.readValue(responseBody.string(), Stations.class);
         }
 
 

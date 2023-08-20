@@ -1,0 +1,62 @@
+package com.github.thibstars.btsd.irail.client;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.thibstars.btsd.irail.model.Station;
+import com.github.thibstars.btsd.irail.model.Stations;
+import java.io.IOException;
+import java.util.Set;
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
+
+/**
+ * @author Thibault Helsmoortel
+ */
+class StationServiceImplTest {
+
+    @Test
+    void shouldGetStations() throws IOException {
+        OkHttpClient client = Mockito.mock(OkHttpClient.class);
+        ObjectMapper objectMapper = Mockito.mock(ObjectMapper.class);
+
+        Call call = Mockito.mock(Call.class);
+        Response response = Mockito.mock(Response.class);
+        ResponseBody responseBody = Mockito.mock(ResponseBody.class);
+        Mockito.when(responseBody.string()).thenReturn("""
+                {
+                  "version": "1.1",
+                  "timestamp": 1489621486,
+                  "station": {
+                    "id": "BE.NMBS.008821006",
+                    "@id": "http://irail.be/stations/NMBS/008821006",
+                    "locationX": 4.421101,
+                    "locationY": 51.2172,
+                    "standardname": "Antwerpen-Centraal",
+                    "name": "Antwerp-Central"
+                  }
+                }""");
+        Mockito.when(response.body()).thenReturn(responseBody);
+        Mockito.when(call.execute()).thenReturn(response);
+        Mockito.when(client.newCall(ArgumentMatchers.any(Request.class))).thenReturn(call);
+
+        Station station = Mockito.mock(Station.class);
+        Mockito.when(station.id()).thenReturn("BE.NMBS.008821006");
+        Stations stations = new Stations(Set.of(station));
+        Mockito.when(objectMapper.readValue(responseBody.string(), Stations.class)).thenReturn(stations);
+
+        StationServiceImpl stationService = new StationServiceImpl(client, objectMapper);
+
+        Set<Station> result = stationService.getStations();
+
+        Assertions.assertNotNull(result, "Result must not be null.");
+        Assertions.assertFalse(result.isEmpty(), "Result must not be empty.");
+        Assertions.assertEquals(1, result.size(), "Result size must be correct.");
+        Assertions.assertEquals(station, result.stream().toList().get(0), "Result must match the expected.");
+    }
+}
