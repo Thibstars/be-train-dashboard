@@ -82,7 +82,6 @@ public class StationServiceImpl implements StationService {
             stations = objectMapper.readValue(responseBody.string(), Stations.class);
         }
 
-
         return stations != null ? stations.stations() : Collections.emptySet();
     }
 }
