@@ -1,5 +1,6 @@
 package com.github.thibstars.btsd.desktop;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.thibstars.btsd.irail.client.StationService;
 import com.github.thibstars.btsd.irail.client.StationServiceImpl;
 import java.awt.BorderLayout;
@@ -13,6 +14,7 @@ import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
+import okhttp3.OkHttpClient;
 
 /**
  * @author Thibault Helsmoortel
@@ -28,7 +30,7 @@ public class MainFrame extends JFrame {
         setContentPane(contentPanel);
         contentPanel.setLayout(new BorderLayout());
 
-        StationService stationService = new StationServiceImpl();
+        StationService stationService = new StationServiceImpl(new OkHttpClient(), new ObjectMapper());
         try {
             DefaultTableModel model = new DefaultTableModel();
             model.addColumn("id");
