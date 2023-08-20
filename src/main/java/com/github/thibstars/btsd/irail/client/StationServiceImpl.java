@@ -30,12 +30,10 @@ public class StationServiceImpl implements StationService {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private final CacheLoader<String, Station> loader;
-
     private final LoadingCache<String, Station> cache;
 
     public StationServiceImpl() {
-        loader = new CacheLoader<>() {
+        CacheLoader<String, Station> loader = new CacheLoader<>() {
             @NotNull
             @Override
             public Station load(@NotNull String key) throws Exception {
