@@ -37,10 +37,10 @@ public class BelgianTrainStationDashboard {
             model.addColumn("name");
             stationService.getStations().forEach(station -> model.addRow(new Object[] {station.id(), station.name()}));
             JTable stationTable = new JTable(model);
+            stationTable.setFillsViewportHeight(true);
             stationTable.setEnabled(false);
-            JPanel pnlTable = new JPanel();
-            JScrollPane spTable = new JScrollPane(pnlTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-            pnlTable.add(stationTable);
+            JScrollPane spTable = new JScrollPane(stationTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            spTable.setViewportView(stationTable);
 
             contentPanel.add(spTable);
         } catch (IOException e) {
