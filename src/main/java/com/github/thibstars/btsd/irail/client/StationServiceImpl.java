@@ -1,6 +1,7 @@
 package com.github.thibstars.btsd.irail.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.thibstars.btsd.irail.exceptions.ClientException;
 import com.github.thibstars.btsd.irail.model.Station;
 import com.github.thibstars.btsd.irail.model.Stations;
 import com.google.common.cache.CacheBuilder;
@@ -58,7 +59,7 @@ public class StationServiceImpl implements StationService {
                             .collect(Collectors.toMap(Station::id, Function.identity()))
             );
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ClientException(e);
         }
     }
 
