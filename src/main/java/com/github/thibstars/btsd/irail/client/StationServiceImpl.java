@@ -7,6 +7,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -72,12 +73,13 @@ public class StationServiceImpl implements StationService {
                 .build();
 
         ResponseBody responseBody;
+        Stations stations;
         try (Response response = CLIENT.newCall(request).execute()) {
             responseBody = Objects.requireNonNull(response.body());
+            stations = OBJECT_MAPPER.readValue(responseBody.string(), Stations.class);
         }
 
-        Stations stations = OBJECT_MAPPER.readValue(responseBody.string(), Stations.class);
 
-        return stations.stations();
+        return stations != null ? stations.stations() : Collections.emptySet();
     }
 }
