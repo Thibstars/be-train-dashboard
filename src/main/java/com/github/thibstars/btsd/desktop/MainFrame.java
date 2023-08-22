@@ -3,6 +3,7 @@ package com.github.thibstars.btsd.desktop;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.thibstars.btsd.irail.client.StationService;
 import com.github.thibstars.btsd.irail.client.StationServiceImpl;
+import com.github.thibstars.btsd.irail.exceptions.ClientException;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
@@ -55,7 +56,7 @@ public class MainFrame extends JFrame {
 
             contentPanel.add(spTable);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ClientException(e);
         }
 
         pack();
