@@ -7,13 +7,19 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.io.IOException;
+import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.RowSorter;
+import javax.swing.RowSorter.SortKey;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SortOrder;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import okhttp3.OkHttpClient;
 
 /**
@@ -37,6 +43,11 @@ public class MainFrame extends JFrame {
             model.addColumn("name");
             stationService.getStations().forEach(station -> model.addRow(new Object[] {station.id(), station.name()}));
             JTable stationTable = new JTable(model);
+            TableRowSorter<TableModel> sorter = new TableRowSorter<>(stationTable.getModel());
+            stationTable.setRowSorter(sorter);
+
+            List<SortKey> sortKeys = List.of(new RowSorter.SortKey(1, SortOrder.ASCENDING));
+            sorter.setSortKeys(sortKeys);
             stationTable.setFillsViewportHeight(true);
             stationTable.setEnabled(false);
             JScrollPane spTable = new JScrollPane(stationTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
