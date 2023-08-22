@@ -28,6 +28,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import okhttp3.OkHttpClient;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Thibault Helsmoortel
@@ -43,20 +44,7 @@ public class MainFrame extends JFrame {
         setContentPane(contentPanel);
         contentPanel.setLayout(new BorderLayout());
 
-        StationService stationService = new StationServiceImpl(new OkHttpClient(), new ObjectMapper());
-        Set<Station> stations;
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("id");
-        model.addColumn("name");
-
-        try {
-            stations = stationService.getStations();
-        } catch (IOException e) {
-            stations = Collections.emptySet();
-        }
-
-        stations.forEach(station -> model.addRow(new Object[] {station.id(), station.name()}));
-        JTable stationTable = new JTable(model);
+        JTable stationTable = createStationsTable();
         TableRowSorter<TableModel> sorter = new TableRowSorter<>(stationTable.getModel());
         stationTable.setRowSorter(sorter);
 
@@ -84,5 +72,24 @@ public class MainFrame extends JFrame {
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+
+    @NotNull
+    private static JTable createStationsTable() {
+        StationService stationService = new StationServiceImpl(new OkHttpClient(), new ObjectMapper());
+        Set<Station> stations;
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("id");
+        model.addColumn("name");
+
+        try {
+            stations = stationService.getStations();
+        } catch (IOException e) {
+            stations = Collections.emptySet();
+        }
+
+        stations.forEach(station -> model.addRow(new Object[] {station.id(), station.name()}));
+
+        return new JTable(model);
     }
 }
