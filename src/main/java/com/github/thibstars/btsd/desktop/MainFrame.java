@@ -3,15 +3,22 @@ package com.github.thibstars.btsd.desktop;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.thibstars.btsd.irail.client.StationService;
 import com.github.thibstars.btsd.irail.client.StationServiceImpl;
+import com.github.thibstars.btsd.irail.model.Station;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.RowSorter;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.ScrollPaneConstants;
@@ -37,26 +44,42 @@ public class MainFrame extends JFrame {
         contentPanel.setLayout(new BorderLayout());
 
         StationService stationService = new StationServiceImpl(new OkHttpClient(), new ObjectMapper());
+        Set<Station> stations;
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("id");
+        model.addColumn("name");
+
         try {
-            DefaultTableModel model = new DefaultTableModel();
-            model.addColumn("id");
-            model.addColumn("name");
-            stationService.getStations().forEach(station -> model.addRow(new Object[] {station.id(), station.name()}));
-            JTable stationTable = new JTable(model);
-            TableRowSorter<TableModel> sorter = new TableRowSorter<>(stationTable.getModel());
-            stationTable.setRowSorter(sorter);
-
-            List<SortKey> sortKeys = List.of(new RowSorter.SortKey(1, SortOrder.ASCENDING));
-            sorter.setSortKeys(sortKeys);
-            stationTable.setFillsViewportHeight(true);
-            stationTable.setEnabled(false);
-            JScrollPane spTable = new JScrollPane(stationTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            spTable.setViewportView(stationTable);
-
-            contentPanel.add(spTable);
+            stations = stationService.getStations();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            stations = Collections.emptySet();
         }
+
+        stations.forEach(station -> model.addRow(new Object[] {station.id(), station.name()}));
+        JTable stationTable = new JTable(model);
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(stationTable.getModel());
+        stationTable.setRowSorter(sorter);
+
+        List<SortKey> sortKeys = List.of(new RowSorter.SortKey(1, SortOrder.ASCENDING));
+        sorter.setSortKeys(sortKeys);
+        stationTable.setFillsViewportHeight(true);
+        stationTable.setEnabled(false);
+        JScrollPane spTable = new JScrollPane(stationTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        spTable.setViewportView(stationTable);
+
+        JTextField tfNameFilter = new JTextField();
+        tfNameFilter.setPreferredSize(new Dimension(250, 20));
+
+        tfNameFilter.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                super.keyReleased(e);
+                sorter.setRowFilter(RowFilter.regexFilter("(?i)" + tfNameFilter.getText()));
+            }
+        });
+
+        contentPanel.add(tfNameFilter, BorderLayout.PAGE_START);
+        contentPanel.add(spTable, BorderLayout.CENTER);
 
         pack();
         setLocationRelativeTo(null);
