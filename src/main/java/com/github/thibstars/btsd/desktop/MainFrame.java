@@ -7,6 +7,8 @@ import com.github.thibstars.btsd.irail.model.Station;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +17,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.RowSorter;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.ScrollPaneConstants;
@@ -63,7 +67,19 @@ public class MainFrame extends JFrame {
         JScrollPane spTable = new JScrollPane(stationTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         spTable.setViewportView(stationTable);
 
-        contentPanel.add(spTable);
+        JTextField tfNameFilter = new JTextField();
+        tfNameFilter.setPreferredSize(new Dimension(250, 20));
+
+        tfNameFilter.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                super.keyReleased(e);
+                sorter.setRowFilter(RowFilter.regexFilter("(?i)" + tfNameFilter.getText()));
+            }
+        });
+
+        contentPanel.add(tfNameFilter, BorderLayout.PAGE_START);
+        contentPanel.add(spTable, BorderLayout.CENTER);
 
         pack();
         setLocationRelativeTo(null);
