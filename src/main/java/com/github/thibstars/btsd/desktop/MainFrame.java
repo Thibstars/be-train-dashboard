@@ -3,12 +3,14 @@ package com.github.thibstars.btsd.desktop;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.thibstars.btsd.irail.client.StationService;
 import com.github.thibstars.btsd.irail.client.StationServiceImpl;
-import com.github.thibstars.btsd.irail.exceptions.ClientException;
+import com.github.thibstars.btsd.irail.model.Station;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -38,26 +40,30 @@ public class MainFrame extends JFrame {
         contentPanel.setLayout(new BorderLayout());
 
         StationService stationService = new StationServiceImpl(new OkHttpClient(), new ObjectMapper());
+        Set<Station> stations;
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("id");
+        model.addColumn("name");
+
         try {
-            DefaultTableModel model = new DefaultTableModel();
-            model.addColumn("id");
-            model.addColumn("name");
-            stationService.getStations().forEach(station -> model.addRow(new Object[] {station.id(), station.name()}));
-            JTable stationTable = new JTable(model);
-            TableRowSorter<TableModel> sorter = new TableRowSorter<>(stationTable.getModel());
-            stationTable.setRowSorter(sorter);
-
-            List<SortKey> sortKeys = List.of(new RowSorter.SortKey(1, SortOrder.ASCENDING));
-            sorter.setSortKeys(sortKeys);
-            stationTable.setFillsViewportHeight(true);
-            stationTable.setEnabled(false);
-            JScrollPane spTable = new JScrollPane(stationTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            spTable.setViewportView(stationTable);
-
-            contentPanel.add(spTable);
+            stations = stationService.getStations();
         } catch (IOException e) {
-            throw new ClientException(e);
+            stations = Collections.emptySet();
         }
+
+        stations.forEach(station -> model.addRow(new Object[] {station.id(), station.name()}));
+        JTable stationTable = new JTable(model);
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(stationTable.getModel());
+        stationTable.setRowSorter(sorter);
+
+        List<SortKey> sortKeys = List.of(new RowSorter.SortKey(1, SortOrder.ASCENDING));
+        sorter.setSortKeys(sortKeys);
+        stationTable.setFillsViewportHeight(true);
+        stationTable.setEnabled(false);
+        JScrollPane spTable = new JScrollPane(stationTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        spTable.setViewportView(stationTable);
+
+        contentPanel.add(spTable);
 
         pack();
         setLocationRelativeTo(null);
