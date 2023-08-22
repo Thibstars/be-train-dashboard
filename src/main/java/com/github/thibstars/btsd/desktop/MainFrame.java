@@ -1,34 +1,20 @@
 package com.github.thibstars.btsd.desktop;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.thibstars.btsd.irail.client.StationService;
-import com.github.thibstars.btsd.irail.client.StationServiceImpl;
-import com.github.thibstars.btsd.irail.model.Station;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
-import javax.swing.RowSorter;
-import javax.swing.RowSorter.SortKey;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SortOrder;
 import javax.swing.WindowConstants;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-import okhttp3.OkHttpClient;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Thibault Helsmoortel
@@ -44,14 +30,8 @@ public class MainFrame extends JFrame {
         setContentPane(contentPanel);
         contentPanel.setLayout(new BorderLayout());
 
-        JTable stationTable = createStationsTable();
-        TableRowSorter<TableModel> sorter = new TableRowSorter<>(stationTable.getModel());
-        stationTable.setRowSorter(sorter);
+        JTable stationTable = new StationsTable();
 
-        List<SortKey> sortKeys = List.of(new RowSorter.SortKey(1, SortOrder.ASCENDING));
-        sorter.setSortKeys(sortKeys);
-        stationTable.setFillsViewportHeight(true);
-        stationTable.setEnabled(false);
         JScrollPane spTable = new JScrollPane(stationTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         spTable.setViewportView(stationTable);
 
@@ -62,7 +42,8 @@ public class MainFrame extends JFrame {
             @Override
             public void keyReleased(KeyEvent e) {
                 super.keyReleased(e);
-                sorter.setRowFilter(RowFilter.regexFilter("(?i)" + tfNameFilter.getText()));
+                ((TableRowSorter<TableModel>) stationTable.getRowSorter())
+                        .setRowFilter(RowFilter.regexFilter("(?i)" + tfNameFilter.getText()));
             }
         });
 
@@ -72,24 +53,5 @@ public class MainFrame extends JFrame {
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
-    }
-
-    @NotNull
-    private static JTable createStationsTable() {
-        StationService stationService = new StationServiceImpl(new OkHttpClient(), new ObjectMapper());
-        Set<Station> stations;
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("id");
-        model.addColumn("name");
-
-        try {
-            stations = stationService.getStations();
-        } catch (IOException e) {
-            stations = Collections.emptySet();
-        }
-
-        stations.forEach(station -> model.addRow(new Object[] {station.id(), station.name()}));
-
-        return new JTable(model);
     }
 }
