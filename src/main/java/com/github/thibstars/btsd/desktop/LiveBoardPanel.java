@@ -22,6 +22,8 @@ public class LiveBoardPanel extends JPanel {
 
     private static final int MILLISECONDS_IN_SECOND = 1000;
 
+    private static final int SECONDS_IN_MINUTE = 60;
+
     public LiveBoardPanel(LiveBoard liveBoard) {
         setBorder(new EmptyBorder(10, 10, 10, 10));
         setLayout(new BorderLayout());
@@ -40,7 +42,8 @@ public class LiveBoardPanel extends JPanel {
         departures.departures().forEach(departure -> {
             Station station = departure.stationInfo();
             Date time = new Date(Long.parseLong(departure.time()) * MILLISECONDS_IN_SECOND);
-            model.addRow(new Object[] {departure.id(), departure.delay(), departure.station(), station != null ? station.id() : "",
+            int delay = departure.delay() / SECONDS_IN_MINUTE;
+            model.addRow(new Object[] {departure.id(), delay, departure.station(), station != null ? station.id() : "",
                     time, departure.vehicle(), departure.platform(), departure.canceled(), departure.left()});
         });
         tblDepartures.setModel(model);
