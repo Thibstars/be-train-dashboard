@@ -1,5 +1,8 @@
 package com.github.thibstars.btsd.desktop;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.thibstars.btsd.irail.client.LiveBoardService;
+import com.github.thibstars.btsd.irail.client.LiveBoardServiceImpl;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
@@ -14,8 +17,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import okhttp3.OkHttpClient;
 
 /**
  * @author Thibault Helsmoortel
@@ -28,25 +33,29 @@ public class MainFrame extends JFrame {
 
         JPanel contentPanel = new JPanel();
         contentPanel.setPreferredSize(new Dimension(900, 600));
+        contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         setContentPane(contentPanel);
         contentPanel.setLayout(new BorderLayout());
 
         StationsTable stationTable = new StationsTable();
         DefaultListSelectionModel selectionModel = new DefaultListSelectionModel();
         selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        LiveBoardService liveBoardService = new LiveBoardServiceImpl(new OkHttpClient(), new ObjectMapper());
         selectionModel.addListSelectionListener(event -> {
             if (event.getValueIsAdjusting()) {
                 stationTable.getStationInRow(stationTable.getSelectedRow())
-                        .ifPresent(station -> {
-                            StationPanel stationPanel = new StationPanel(station);
+                        .flatMap(station -> liveBoardService.getForStation(station.id()))
+                        .ifPresent(liveBoard -> {
+                            LiveBoardPanel liveBoardPanel = new LiveBoardPanel(liveBoard);
 
-                            JFrame stationFrame = new JFrame(station.name());
+                            JFrame liveBoardFrame = new JFrame("Live Board - " + liveBoard.station());
 
-                            stationFrame.add(stationPanel);
-                            stationFrame.pack();
-                            stationFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-                            stationFrame.setLocationRelativeTo(null);
-                            stationFrame.setVisible(true);
+                            liveBoardFrame.setPreferredSize(new Dimension(875, 575));
+                            liveBoardFrame.add(liveBoardPanel);
+                            liveBoardFrame.pack();
+                            liveBoardFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+                            liveBoardFrame.setLocationRelativeTo(null);
+                            liveBoardFrame.setVisible(true);
                         });
             }
         });
