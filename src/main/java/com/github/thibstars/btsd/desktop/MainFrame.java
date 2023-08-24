@@ -27,13 +27,21 @@ import okhttp3.OkHttpClient;
  */
 public class MainFrame extends JFrame {
 
+    private static final Dimension PREFERRED_FRAME_SIZE = new Dimension(900, 600);
+
+    private static final EmptyBorder INSETS = new EmptyBorder(10, 10, 10, 10);
+
+    private static final int SUBFRAME_BOUND_DIFF = 25;
+
+    private static final String FILTER_IGNORE_CASE_REGEX = "(?i)";
+
     public MainFrame() throws HeadlessException {
         setTitle("Belgian Train Station Dashboard");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         JPanel contentPanel = new JPanel();
-        contentPanel.setPreferredSize(new Dimension(900, 600));
-        contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        contentPanel.setPreferredSize(PREFERRED_FRAME_SIZE);
+        contentPanel.setBorder(INSETS);
         setContentPane(contentPanel);
         contentPanel.setLayout(new BorderLayout());
 
@@ -50,7 +58,7 @@ public class MainFrame extends JFrame {
 
                             JFrame liveBoardFrame = new JFrame("Live Board - " + liveBoard.station());
 
-                            liveBoardFrame.setPreferredSize(new Dimension(875, 575));
+                            liveBoardFrame.setPreferredSize(new Dimension(contentPanel.getWidth() - SUBFRAME_BOUND_DIFF, contentPanel.getHeight() - SUBFRAME_BOUND_DIFF));
                             liveBoardFrame.add(liveBoardPanel);
                             liveBoardFrame.pack();
                             liveBoardFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -65,14 +73,13 @@ public class MainFrame extends JFrame {
         spTable.setViewportView(stationTable);
 
         JTextField tfNameFilter = new JTextField();
-        tfNameFilter.setPreferredSize(new Dimension(250, 20));
 
         tfNameFilter.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 super.keyReleased(e);
                 ((TableRowSorter<TableModel>) stationTable.getRowSorter())
-                        .setRowFilter(RowFilter.regexFilter("(?i)" + tfNameFilter.getText()));
+                        .setRowFilter(RowFilter.regexFilter(FILTER_IGNORE_CASE_REGEX + tfNameFilter.getText()));
             }
         });
 
