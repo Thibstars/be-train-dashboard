@@ -5,11 +5,12 @@ import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
@@ -30,7 +31,26 @@ public class MainFrame extends JFrame {
         setContentPane(contentPanel);
         contentPanel.setLayout(new BorderLayout());
 
-        JTable stationTable = new StationsTable();
+        StationsTable stationTable = new StationsTable();
+        DefaultListSelectionModel selectionModel = new DefaultListSelectionModel();
+        selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        selectionModel.addListSelectionListener(event -> {
+            if (event.getValueIsAdjusting()) {
+                stationTable.getStationInRow(stationTable.getSelectedRow())
+                        .ifPresent(station -> {
+                            StationPanel stationPanel = new StationPanel(station);
+
+                            JFrame stationFrame = new JFrame(station.name());
+
+                            stationFrame.add(stationPanel);
+                            stationFrame.pack();
+                            stationFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+                            stationFrame.setLocationRelativeTo(null);
+                            stationFrame.setVisible(true);
+                        });
+            }
+        });
+        stationTable.setSelectionModel(selectionModel);
 
         JScrollPane spTable = new JScrollPane(stationTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         spTable.setViewportView(stationTable);

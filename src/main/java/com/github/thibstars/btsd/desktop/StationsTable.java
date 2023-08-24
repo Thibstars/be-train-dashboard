@@ -8,12 +8,12 @@ import java.awt.HeadlessException;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javax.swing.JTable;
 import javax.swing.RowSorter;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.SortOrder;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import okhttp3.OkHttpClient;
@@ -23,10 +23,11 @@ import okhttp3.OkHttpClient;
  */
 public class StationsTable extends JTable {
 
+    private transient Set<Station> stations;
+
     public StationsTable() throws HeadlessException {
         StationService stationService = new StationServiceImpl(new OkHttpClient(), new ObjectMapper());
-        Set<Station> stations;
-        DefaultTableModel model = new DefaultTableModel();
+        StationsTableModel model = new StationsTableModel();
         model.addColumn("id");
         model.addColumn("name");
 
@@ -47,6 +48,13 @@ public class StationsTable extends JTable {
         sorter.setSortKeys(sortKeys);
 
         setFillsViewportHeight(true);
-        setEnabled(false);
+    }
+
+    public Optional<Station> getStationInRow(int rowIndex) {
+        String stationId = super.getValueAt(rowIndex, 0).toString();
+
+        return stations.stream()
+                .filter(station -> station.id().equals(stationId))
+                .findFirst();
     }
 }
