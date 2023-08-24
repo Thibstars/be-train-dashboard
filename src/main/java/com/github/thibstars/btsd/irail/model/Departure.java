@@ -1,6 +1,7 @@
 package com.github.thibstars.btsd.irail.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Thibault Helsmoortel
@@ -13,6 +14,7 @@ public record Departure(
 
         String station,
 
+        @JsonProperty("stationinfo")
         Station stationInfo,
 
         String time,
