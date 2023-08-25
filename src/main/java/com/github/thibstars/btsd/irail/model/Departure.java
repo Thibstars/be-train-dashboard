@@ -21,10 +21,20 @@ public record Departure(
 
         String vehicle,
 
+        @JsonProperty("vehicleinfo")
+        Vehicle vehicleInfo,
+
         String platform,
+
+        @JsonProperty("platforminfo")
+        Platform platformInfo,
 
         int canceled,
 
-        int left
+        int left,
+
+        String departureConnection,
+
+        Occupancy occupancy
 ) {
 }

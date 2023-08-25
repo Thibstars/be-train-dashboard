@@ -3,7 +3,10 @@ package com.github.thibstars.btsd.desktop;
 import com.github.thibstars.btsd.irail.model.Departure;
 import com.github.thibstars.btsd.irail.model.Departures;
 import com.github.thibstars.btsd.irail.model.LiveBoard;
+import com.github.thibstars.btsd.irail.model.Occupancy;
+import com.github.thibstars.btsd.irail.model.Platform;
 import com.github.thibstars.btsd.irail.model.Station;
+import com.github.thibstars.btsd.irail.model.Vehicle;
 import java.awt.BorderLayout;
 import java.util.Arrays;
 import java.util.Date;
@@ -43,8 +46,24 @@ public class LiveBoardPanel extends JPanel {
             Station station = departure.stationInfo();
             Date time = new Date(Long.parseLong(departure.time()) * MILLISECONDS_IN_SECOND);
             int delay = departure.delay() / SECONDS_IN_MINUTE;
-            model.addRow(new Object[] {departure.id(), delay, departure.station(), station != null ? station.id() : "",
-                    time, departure.vehicle(), departure.platform(), departure.canceled(), departure.left()});
+            Vehicle vehicle = departure.vehicleInfo();
+            Platform platform = departure.platformInfo();
+            Occupancy occupancy = departure.occupancy();
+            model.addRow(new Object[] {
+                    departure.id(),
+                    delay,
+                    departure.station(),
+                    station != null ? station.id() : "",
+                    time,
+                    departure.vehicle(),
+                    vehicle != null ? vehicle.name() : "",
+                    departure.platform(),
+                    platform != null ? platform.name() : "",
+                    departure.canceled(),
+                    departure.left(),
+                    departure.departureConnection(),
+                    occupancy != null ? occupancy.name() : ""
+            });
         });
         tblDepartures.setModel(model);
 
