@@ -51,7 +51,12 @@ public class StationsTable extends JTable {
     }
 
     public Optional<Station> getStationInRow(int rowIndex) {
-        String stationId = super.getValueAt(rowIndex, 0).toString();
+        String stationId;
+        try {
+            stationId = super.getValueAt(rowIndex, 0).toString();
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return Optional.empty();
+        }
 
         return stations.stream()
                 .filter(station -> station.id().equals(stationId))

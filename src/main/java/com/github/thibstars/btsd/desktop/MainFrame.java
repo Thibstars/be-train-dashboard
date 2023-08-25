@@ -65,6 +65,7 @@ public class MainFrame extends JFrame {
                             liveBoardFrame.setLocationRelativeTo(null);
                             liveBoardFrame.setVisible(true);
                         });
+                stationTable.clearSelection();
             }
         });
         stationTable.setSelectionModel(selectionModel);
