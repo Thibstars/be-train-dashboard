@@ -1,30 +1,23 @@
 package com.github.thibstars.btsd.desktop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.thibstars.btsd.irail.client.StationService;
-import com.github.thibstars.btsd.irail.client.StationServiceImpl;
-import com.github.thibstars.btsd.irail.model.Station;
+import com.github.thibstars.btsd.irail.client.LiveBoardService;
+import com.github.thibstars.btsd.irail.client.LiveBoardServiceImpl;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
-import javax.swing.RowSorter;
-import javax.swing.RowSorter.SortKey;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SortOrder;
 import javax.swing.WindowConstants;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import okhttp3.OkHttpClient;
@@ -34,47 +27,60 @@ import okhttp3.OkHttpClient;
  */
 public class MainFrame extends JFrame {
 
+    private static final Dimension PREFERRED_FRAME_SIZE = new Dimension(900, 600);
+
+    private static final EmptyBorder INSETS = new EmptyBorder(10, 10, 10, 10);
+
+    private static final int SUBFRAME_BOUND_DIFF = 25;
+
+    private static final String FILTER_IGNORE_CASE_REGEX = "(?i)";
+
     public MainFrame() throws HeadlessException {
         setTitle("Belgian Train Station Dashboard");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         JPanel contentPanel = new JPanel();
-        contentPanel.setPreferredSize(new Dimension(900, 600));
+        contentPanel.setPreferredSize(PREFERRED_FRAME_SIZE);
+        contentPanel.setBorder(INSETS);
         setContentPane(contentPanel);
         contentPanel.setLayout(new BorderLayout());
 
-        StationService stationService = new StationServiceImpl(new OkHttpClient(), new ObjectMapper());
-        Set<Station> stations;
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("id");
-        model.addColumn("name");
+        StationsTable stationTable = new StationsTable();
+        DefaultListSelectionModel selectionModel = new DefaultListSelectionModel();
+        selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        LiveBoardService liveBoardService = new LiveBoardServiceImpl(new OkHttpClient(), new ObjectMapper());
+        selectionModel.addListSelectionListener(event -> {
+            if (event.getValueIsAdjusting()) {
+                stationTable.getStationInRow(stationTable.getSelectedRow())
+                        .flatMap(station -> liveBoardService.getForStation(station.id()))
+                        .ifPresent(liveBoard -> {
+                            LiveBoardPanel liveBoardPanel = new LiveBoardPanel(liveBoard);
 
-        try {
-            stations = stationService.getStations();
-        } catch (IOException e) {
-            stations = Collections.emptySet();
-        }
+                            JFrame liveBoardFrame = new JFrame("Live Board - " + liveBoard.station());
 
-        stations.forEach(station -> model.addRow(new Object[] {station.id(), station.name()}));
-        JTable stationTable = new JTable(model);
-        TableRowSorter<TableModel> sorter = new TableRowSorter<>(stationTable.getModel());
-        stationTable.setRowSorter(sorter);
+                            liveBoardFrame.setPreferredSize(new Dimension(contentPanel.getWidth() - SUBFRAME_BOUND_DIFF, contentPanel.getHeight() - SUBFRAME_BOUND_DIFF));
+                            liveBoardFrame.add(liveBoardPanel);
+                            liveBoardFrame.pack();
+                            liveBoardFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+                            liveBoardFrame.setLocationRelativeTo(null);
+                            liveBoardFrame.setVisible(true);
+                        });
+                stationTable.clearSelection();
+            }
+        });
+        stationTable.setSelectionModel(selectionModel);
 
-        List<SortKey> sortKeys = List.of(new RowSorter.SortKey(1, SortOrder.ASCENDING));
-        sorter.setSortKeys(sortKeys);
-        stationTable.setFillsViewportHeight(true);
-        stationTable.setEnabled(false);
         JScrollPane spTable = new JScrollPane(stationTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         spTable.setViewportView(stationTable);
 
         JTextField tfNameFilter = new JTextField();
-        tfNameFilter.setPreferredSize(new Dimension(250, 20));
 
         tfNameFilter.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 super.keyReleased(e);
-                sorter.setRowFilter(RowFilter.regexFilter("(?i)" + tfNameFilter.getText()));
+                ((TableRowSorter<TableModel>) stationTable.getRowSorter())
+                        .setRowFilter(RowFilter.regexFilter(FILTER_IGNORE_CASE_REGEX + tfNameFilter.getText()));
             }
         });
 
