@@ -20,11 +20,15 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Thibault Helsmoortel
  */
 public class StationServiceImpl implements StationService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StationServiceImpl.class);
 
     private static final String URL = "https://api.irail.be/stations?format=json&lang=en";
 
@@ -71,6 +75,8 @@ public class StationServiceImpl implements StationService {
     }
 
     private Set<Station> fetchStations() throws IOException {
+        LOGGER.info("Fetching stations.");
+
         Request request = new Request.Builder()
                 .url(URL)
                 .build();

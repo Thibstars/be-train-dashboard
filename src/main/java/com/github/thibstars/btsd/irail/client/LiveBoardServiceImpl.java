@@ -10,11 +10,15 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Thibault Helsmoortel
  */
 public class LiveBoardServiceImpl implements LiveBoardService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LiveBoardServiceImpl.class);
 
     private static final String URL = "https://api.irail.be/liveboard/?id=${id}&arrdep=departure&lang=en&format=json&alerts=false";
 
@@ -37,6 +41,8 @@ public class LiveBoardServiceImpl implements LiveBoardService {
     }
 
     private LiveBoard fetchLiveBoard(String id) throws IOException {
+        LOGGER.info("Fetching live board for station: {}", id);
+
         Request request = new Request.Builder()
                 .url(URL.replace("${id}", id))
                 .build();
