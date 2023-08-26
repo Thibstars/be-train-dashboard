@@ -17,11 +17,15 @@ import javax.swing.SortOrder;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import okhttp3.OkHttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Thibault Helsmoortel
  */
 public class StationsTable extends JTable {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StationsTable.class);
 
     private transient Set<Station> stations;
 
@@ -34,6 +38,7 @@ public class StationsTable extends JTable {
         try {
             stations = stationService.getStations();
         } catch (IOException e) {
+            LOGGER.warn("Could not retrieve stations.", e);
             stations = Collections.emptySet();
         }
 
