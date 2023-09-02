@@ -8,5 +8,11 @@ import java.util.Optional;
  */
 public interface LiveBoardService {
 
+    /**
+     * Retrieves a Live Board for a given Station.
+     *
+     * @param id the Station's id
+     * @return a Live Board for a given Station
+     */
     Optional<LiveBoard> getForStation(String id);
 }

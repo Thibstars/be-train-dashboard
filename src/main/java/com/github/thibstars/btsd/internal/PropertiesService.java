@@ -8,6 +8,11 @@ import java.util.Properties;
  */
 public interface PropertiesService {
 
+    /**
+     * Retrieves application properties.
+     *
+     * @return application properties
+     */
     Optional<Properties> getApplicationProperties();
 
 }
