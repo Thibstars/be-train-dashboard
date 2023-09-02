@@ -1,7 +1,6 @@
 package com.github.thibstars.btsd.irail.client;
 
 import com.github.thibstars.btsd.irail.model.Station;
-import java.io.IOException;
 import java.util.Set;
 
 /**
@@ -9,6 +8,11 @@ import java.util.Set;
  */
 public interface StationService {
 
-    Set<Station> getStations() throws IOException;
+    /**
+     * Retrieves a set of all available Stations.
+     *
+     * @return a set of all available Stations
+     */
+    Set<Station> getStations();
 
 }

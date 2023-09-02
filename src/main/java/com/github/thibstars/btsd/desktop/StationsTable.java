@@ -5,8 +5,6 @@ import com.github.thibstars.btsd.irail.client.StationService;
 import com.github.thibstars.btsd.irail.client.StationServiceImpl;
 import com.github.thibstars.btsd.irail.model.Station;
 import java.awt.HeadlessException;
-import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -17,17 +15,13 @@ import javax.swing.SortOrder;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import okhttp3.OkHttpClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Thibault Helsmoortel
  */
 public class StationsTable extends JTable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StationsTable.class);
-
-    private transient Set<Station> stations;
+    private final transient Set<Station> stations;
 
     public StationsTable() throws HeadlessException {
         StationService stationService = new StationServiceImpl(new OkHttpClient(), new ObjectMapper());
@@ -35,12 +29,7 @@ public class StationsTable extends JTable {
         model.addColumn("id");
         model.addColumn("name");
 
-        try {
-            stations = stationService.getStations();
-        } catch (IOException e) {
-            LOGGER.warn("Could not retrieve stations.", e);
-            stations = Collections.emptySet();
-        }
+        stations = stationService.getStations();
 
         stations.forEach(station -> model.addRow(new Object[] {station.id(), station.name()}));
 
