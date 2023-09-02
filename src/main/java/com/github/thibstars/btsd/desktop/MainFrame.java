@@ -10,6 +10,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -38,6 +41,17 @@ public class MainFrame extends JFrame {
     public MainFrame() throws HeadlessException {
         setTitle("Belgian Train Station Dashboard");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        JMenuBar menuBar = new JMenuBar();
+        JMenu mainMenu = new JMenu("General");
+        JMenuItem about = new JMenuItem("About");
+        about.addActionListener(event -> {
+            AboutDialog aboutDialog = new AboutDialog(getTitle());
+            aboutDialog.setVisible(true);
+        });
+        mainMenu.add(about);
+        menuBar.add(mainMenu);
+        setJMenuBar(menuBar);
 
         JPanel contentPanel = new JPanel();
         contentPanel.setPreferredSize(PREFERRED_FRAME_SIZE);
