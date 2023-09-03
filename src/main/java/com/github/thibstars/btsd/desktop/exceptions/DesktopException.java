@@ -8,4 +8,8 @@ public class DesktopException extends RuntimeException {
     public DesktopException(Exception exception) {
         super(exception);
     }
+
+    public DesktopException(String message) {
+        super(message);
+    }
 }

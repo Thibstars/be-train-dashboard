@@ -6,7 +6,7 @@ package com.github.thibstars.btsd.desktop;
 public class BelgianTrainStationDashboard {
 
     public static void main(String[] args) {
-        new MainFrame();
+        new DesktopLauncher().launch();
     }
 
 }

@@ -1,4 +1,4 @@
-package com.github.thibstars.btsd.desktop;
+package com.github.thibstars.btsd.desktop.stations;
 
 import javax.swing.table.DefaultTableModel;
 
