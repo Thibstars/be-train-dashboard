@@ -1,5 +1,6 @@
-package com.github.thibstars.btsd.desktop;
+package com.github.thibstars.btsd.desktop.liveboard;
 
+import com.github.thibstars.btsd.desktop.stations.StationPanel;
 import com.github.thibstars.btsd.irail.model.Departure;
 import com.github.thibstars.btsd.irail.model.Departures;
 import com.github.thibstars.btsd.irail.model.LiveBoard;

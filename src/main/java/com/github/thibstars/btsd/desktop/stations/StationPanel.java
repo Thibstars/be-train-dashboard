@@ -1,5 +1,6 @@
-package com.github.thibstars.btsd.desktop;
+package com.github.thibstars.btsd.desktop.stations;
 
+import com.github.thibstars.btsd.desktop.components.CaptionedLabel;
 import com.github.thibstars.btsd.irail.model.Station;
 import java.awt.GridLayout;
 import javax.swing.BorderFactory;
