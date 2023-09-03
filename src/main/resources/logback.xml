@@ -1,9 +1,9 @@
 <configuration>
 
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
+        <encoder>
             <pattern>%magenta(%d{HH:mm:ss.SSS}) %highlight([%thread]) %-5level [userId: %X{userId}]  %cyan(%logger{36}) - %blue(%msg%n)</pattern>
-        </layout>
+        </encoder>
     </appender>
 
     <appender name="fout" class="ch.qos.logback.core.FileAppender">
