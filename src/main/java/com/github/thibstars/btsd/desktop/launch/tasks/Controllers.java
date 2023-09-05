@@ -1,4 +1,4 @@
-package com.github.thibstars.btsd.desktop.launch;
+package com.github.thibstars.btsd.desktop.launch.tasks;
 
 import com.github.thibstars.btsd.desktop.about.AboutController;
 import com.github.thibstars.btsd.desktop.liveboard.LiveBoardController;

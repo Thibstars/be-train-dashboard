@@ -1,6 +1,5 @@
 package com.github.thibstars.btsd.desktop.launch.tasks;
 
-import com.github.thibstars.btsd.desktop.launch.Controllers;
 import com.github.thibstars.btsd.desktop.launch.CountDownLatchContext;
 import com.github.thibstars.btsd.desktop.main.MainController;
 import com.github.thibstars.btsd.desktop.main.MainFrame;

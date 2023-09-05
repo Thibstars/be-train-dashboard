@@ -2,7 +2,6 @@ package com.github.thibstars.btsd.desktop.launch.tasks;
 
 import com.github.thibstars.btsd.desktop.about.AboutController;
 import com.github.thibstars.btsd.desktop.about.AboutDialog;
-import com.github.thibstars.btsd.desktop.launch.Controllers;
 import com.github.thibstars.btsd.desktop.launch.CountDownLatchContext;
 import com.github.thibstars.btsd.desktop.liveboard.LiveBoardController;
 import com.github.thibstars.btsd.desktop.stations.StationsController;
