@@ -24,16 +24,18 @@ public class AboutController {
 
     private void initStaticValues(AboutDialog aboutDialog) {
         Properties applicationProperties = getApplicationProperties();
-        aboutDialog.setAppVersion(applicationProperties.getProperty("application.version"));
-        try {
-            URI gitHubRepoUri = new URI(applicationProperties.getProperty("github.repo.uri"));
-            String gitHubUserTag = applicationProperties.getProperty("github.user.tag");
-            URI gitHubUserUri = new URI(applicationProperties.getProperty("github.user.uri"));
-            aboutDialog.setGitHubRepoUri(gitHubRepoUri);
-            aboutDialog.setGithubUserTag(gitHubUserTag);
-            aboutDialog.setGitHubUserUri(gitHubUserUri);
-        } catch (URISyntaxException e) {
-            throw new DesktopException(e);
+        if (!applicationProperties.isEmpty()) {
+            aboutDialog.setAppVersion(applicationProperties.getProperty("application.version"));
+            try {
+                URI gitHubRepoUri = new URI(applicationProperties.getProperty("github.repo.uri"));
+                String gitHubUserTag = applicationProperties.getProperty("github.user.tag");
+                URI gitHubUserUri = new URI(applicationProperties.getProperty("github.user.uri"));
+                aboutDialog.setGitHubRepoUri(gitHubRepoUri);
+                aboutDialog.setGithubUserTag(gitHubUserTag);
+                aboutDialog.setGitHubUserUri(gitHubUserUri);
+            } catch (URISyntaxException e) {
+                throw new DesktopException(e);
+            }
         }
     }
 
