@@ -33,7 +33,7 @@ class ServicesSetupTaskTest {
                 countDownLatchContext,
                 dependentCountDownLatchContext,
                 prerequisitesSetupTask
-        );
+                );
     }
 
     @Test

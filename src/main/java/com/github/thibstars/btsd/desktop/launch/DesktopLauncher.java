@@ -1,6 +1,7 @@
 package com.github.thibstars.btsd.desktop.launch;
 
 import com.github.thibstars.btsd.desktop.launch.tasks.ControllersSetupTask;
+import com.github.thibstars.btsd.desktop.launch.tasks.IconSetupTask;
 import com.github.thibstars.btsd.desktop.launch.tasks.MainControllerSetupTask;
 import com.github.thibstars.btsd.desktop.launch.tasks.PrerequisitesSetupTask;
 import com.github.thibstars.btsd.desktop.launch.tasks.ServicesSetupTask;
@@ -23,7 +24,7 @@ public class DesktopLauncher {
     public void launch() throws InterruptedException {
         LOGGER.info("Preparing application.");
 
-        var preRequisitesCountdownLatchContext = new CountDownLatchContext(1, "Prerequisites");
+        var preRequisitesCountdownLatchContext = new CountDownLatchContext(2, "Prerequisites");
         var servicesCountdownLatchContext = new CountDownLatchContext(1, "Services");
         var controllerCountDownLatchContext = new CountDownLatchContext(1, "Controllers");
         var launchCountDownLatchContext = new CountDownLatchContext(1, "Launch");
@@ -60,11 +61,13 @@ public class DesktopLauncher {
         SwingUtilities.invokeLater(() -> launchFrame.setVisible(true));
 
         var prerequisitesSetupTask = new PrerequisitesSetupTask(preRequisitesCountdownLatchContext);
+        var iconSetupTask = new IconSetupTask(preRequisitesCountdownLatchContext, launchFrame);
         var servicesSetupTask = new ServicesSetupTask(servicesCountdownLatchContext, preRequisitesCountdownLatchContext, prerequisitesSetupTask);
         var controllersSetupTask = new ControllersSetupTask(controllerCountDownLatchContext, servicesCountdownLatchContext, servicesSetupTask);
         var mainControllerSetupTask = new MainControllerSetupTask(launchCountDownLatchContext, controllerCountDownLatchContext, controllersSetupTask);
         List<Runnable> tasks = List.of(
                 prerequisitesSetupTask,
+                iconSetupTask,
                 servicesSetupTask,
                 controllersSetupTask,
                 mainControllerSetupTask,
@@ -82,7 +85,7 @@ public class DesktopLauncher {
                 TimeUnit.MILLISECONDS
         );
 
-        shutDownLaunchProcess(executorService, scheduledExecutorService);
+        shutDownLaunchProcess(executorService, scheduledExecutorService, statusUpdater);
     }
 
     private void launchApplication(CountDownLatchContext launchCountDownLatchContext, MainControllerSetupTask mainControllerSetupTask) {
@@ -93,8 +96,10 @@ public class DesktopLauncher {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored") // Can't do anything with the result
-    private static void shutDownLaunchProcess(ExecutorService executorService, ScheduledExecutorService scheduledExecutorService)
+    private static void shutDownLaunchProcess(ExecutorService executorService, ScheduledExecutorService scheduledExecutorService,
+            Runnable statusUpdater)
             throws InterruptedException {
+        statusUpdater.run();
         executorService.shutdown();
         executorService.awaitTermination(5, TimeUnit.SECONDS);
         scheduledExecutorService.shutdown();
