@@ -32,6 +32,7 @@ public record CountDownLatchContext(
             countDownLatch.await();
         } catch (InterruptedException e) {
             LOGGER.error(e.getMessage(), e);
+            Thread.currentThread().interrupt();
         }
     }
 
