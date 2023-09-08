@@ -1,5 +1,6 @@
 package com.github.thibstars.btsd.desktop.main;
 
+import com.github.thibstars.btsd.desktop.components.PlaceholderTextField;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.KeyAdapter;
@@ -9,7 +10,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
@@ -44,7 +44,8 @@ public class MainFrame extends JFrame {
 
         mainController.initStationsTable(new Dimension(PREFERRED_FRAME_SIZE.width - SUBFRAME_BOUND_DIFF, PREFERRED_FRAME_SIZE.height - SUBFRAME_BOUND_DIFF));
 
-        JTextField tfNameFilter = new JTextField();
+        PlaceholderTextField tfNameFilter = new PlaceholderTextField();
+        tfNameFilter.setPlaceholder("Search...");
 
         tfNameFilter.addKeyListener(new KeyAdapter() {
             @Override
