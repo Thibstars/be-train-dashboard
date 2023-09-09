@@ -62,8 +62,8 @@ public class AboutDialog extends JDialog {
         gitHubRepoLink.setUri(gitHubRepoUri);
     }
 
-    protected void setGithubUserTag(String githubUserTag) {
-        gitHubUserLink.setText(githubUserTag);
+    protected void setGitHubUserTag(String gitHubUserTag) {
+        gitHubUserLink.setText(gitHubUserTag);
     }
 
     protected void setGitHubUserUri(URI gitHubUserUri) {

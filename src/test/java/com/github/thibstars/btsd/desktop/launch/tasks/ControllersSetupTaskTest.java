@@ -57,6 +57,7 @@ class ControllersSetupTaskTest {
         Assertions.assertNotNull(result.aboutController(), "AboutController must not be null.");
         Assertions.assertNotNull(result.liveBoardController(), "LiveBoardController must not be null.");
         Assertions.assertNotNull(result.stationsController(), "StationsController must not be null.");
+        Assertions.assertNotNull(result.reportIssueController(), "ReportIssueController must not be null.");
 
         Mockito.verify(dependentCountDownLatchContext).await();
         Mockito.verify(countDownLatchContext).countDown();

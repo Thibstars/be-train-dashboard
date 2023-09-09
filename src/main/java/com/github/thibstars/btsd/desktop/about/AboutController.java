@@ -31,7 +31,7 @@ public class AboutController {
                 String gitHubUserTag = applicationProperties.getProperty("github.user.tag");
                 URI gitHubUserUri = new URI(applicationProperties.getProperty("github.user.uri"));
                 aboutDialog.setGitHubRepoUri(gitHubRepoUri);
-                aboutDialog.setGithubUserTag(gitHubUserTag);
+                aboutDialog.setGitHubUserTag(gitHubUserTag);
                 aboutDialog.setGitHubUserUri(gitHubUserUri);
             } catch (URISyntaxException e) {
                 throw new DesktopException(e);

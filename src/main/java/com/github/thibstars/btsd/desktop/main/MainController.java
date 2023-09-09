@@ -1,6 +1,7 @@
 package com.github.thibstars.btsd.desktop.main;
 
 import com.github.thibstars.btsd.desktop.about.AboutController;
+import com.github.thibstars.btsd.desktop.issue.ReportIssueController;
 import com.github.thibstars.btsd.desktop.stations.StationsController;
 import java.awt.Dimension;
 import javax.swing.JScrollPane;
@@ -16,10 +17,13 @@ public class MainController {
 
     private final StationsController stationsController;
 
-    public MainController(MainFrame mainFrame, AboutController aboutController, StationsController stationsController) {
+    private final ReportIssueController reportIssueController;
+
+    public MainController(MainFrame mainFrame, AboutController aboutController, StationsController stationsController, ReportIssueController reportIssueController) {
         this.mainFrame = mainFrame;
         this.aboutController = aboutController;
         this.stationsController = stationsController;
+        this.reportIssueController = reportIssueController;
 
         mainFrame.init(this);
     }
@@ -46,5 +50,9 @@ public class MainController {
 
     protected void filterStationsTableByName(String name) {
         stationsController.filterStationsTableByName(name);
+    }
+
+    protected void showReportIssueView() {
+        reportIssueController.showView();
     }
 }

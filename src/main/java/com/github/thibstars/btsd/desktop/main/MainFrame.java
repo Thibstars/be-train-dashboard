@@ -67,7 +67,10 @@ public class MainFrame extends JFrame {
         JMenu mainMenu = new JMenu("General");
         JMenuItem about = new JMenuItem("About");
         about.addActionListener(event -> mainController.showAboutView());
+        JMenuItem reportIssue = new JMenuItem("Report an issue");
+        reportIssue.addActionListener(event -> mainController.showReportIssueView());
         mainMenu.add(about);
+        mainMenu.add(reportIssue);
         menuBar.add(mainMenu);
         setJMenuBar(menuBar);
     }

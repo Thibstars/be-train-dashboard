@@ -1,6 +1,7 @@
 package com.github.thibstars.btsd.desktop.main;
 
 import com.github.thibstars.btsd.desktop.about.AboutController;
+import com.github.thibstars.btsd.desktop.issue.ReportIssueController;
 import com.github.thibstars.btsd.desktop.stations.StationsController;
 import java.awt.Dimension;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,9 @@ class MainControllerTest {
 
     @Mock
     private StationsController stationsController;
+
+    @Mock
+    private ReportIssueController reportIssueController;
 
     @InjectMocks
     private MainController mainController;
@@ -74,5 +78,12 @@ class MainControllerTest {
         mainController.filterStationsTableByName(name);
 
         Mockito.verify(stationsController).filterStationsTableByName(name);
+    }
+
+    @Test
+    void shouldShowReportIssueView() {
+        mainController.showReportIssueView();
+
+        Mockito.verify(reportIssueController).showView();
     }
 }

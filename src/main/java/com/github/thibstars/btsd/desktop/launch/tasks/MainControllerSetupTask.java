@@ -30,7 +30,8 @@ public class MainControllerSetupTask extends Creator<MainController> implements 
         this.creatable = new MainController(
                 new MainFrame(),
                 controllers.aboutController(),
-                controllers.stationsController()
+                controllers.stationsController(),
+                controllers.reportIssueController()
         );
 
         completeTask(countDownLatchContext);
