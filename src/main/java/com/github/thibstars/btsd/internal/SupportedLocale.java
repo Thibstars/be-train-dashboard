@@ -11,7 +11,9 @@ public enum SupportedLocale {
 
     ENGLISH(Locale.ENGLISH),
 
-    DUTCH(new Locale("nl"));
+    DUTCH(new Locale("nl")),
+
+    FRENCH(new Locale("fr"));
 
     private final Locale locale;
 
