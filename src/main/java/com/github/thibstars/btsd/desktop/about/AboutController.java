@@ -1,6 +1,7 @@
 package com.github.thibstars.btsd.desktop.about;
 
 import com.github.thibstars.btsd.desktop.exceptions.DesktopException;
+import com.github.thibstars.btsd.desktop.i18n.I18NController;
 import com.github.thibstars.btsd.internal.PropertiesService;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -44,8 +45,8 @@ public class AboutController {
                 .orElseThrow(() -> new DesktopException("Could not retrieve application properties."));
     }
 
-    public void setAppName(String appName) {
-        aboutDialog.setAppName(appName);
+    public void setAppName(String appName, I18NController i18NController) {
+        aboutDialog.setAppName(appName, i18NController);
     }
 
     public void showView() {

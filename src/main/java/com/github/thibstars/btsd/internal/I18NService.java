@@ -9,4 +9,7 @@ public interface I18NService {
 
     Locale getPreferredLocale();
 
+    void changeLocale(Locale locale);
+
+    String getMessage(String key);
 }

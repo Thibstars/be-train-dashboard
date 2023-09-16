@@ -2,6 +2,9 @@ package com.github.thibstars.btsd.desktop.launch.tasks;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.thibstars.btsd.desktop.launch.CountDownLatchContext;
+import com.github.thibstars.btsd.internal.I18NServiceImpl;
+import com.github.thibstars.btsd.internal.PreferencesService;
+import com.github.thibstars.btsd.internal.PreferencesServiceImpl;
 import com.github.thibstars.btsd.internal.PropertiesServiceImpl;
 import com.github.thibstars.btsd.irail.client.LiveBoardServiceImpl;
 import com.github.thibstars.btsd.irail.client.StationServiceImpl;
@@ -33,10 +36,14 @@ public class ServicesSetupTask extends Creator<Services> implements Runnable, La
         OkHttpClient okHttpClient = prerequisites.okHttpClient();
         ObjectMapper objectMapper = prerequisites.objectMapper();
 
+        PreferencesService preferencesService = new PreferencesServiceImpl();
+
         this.creatable = new Services(
                 new PropertiesServiceImpl(),
                 new LiveBoardServiceImpl(okHttpClient, objectMapper),
-                new StationServiceImpl(okHttpClient, objectMapper)
+                new StationServiceImpl(okHttpClient, objectMapper),
+                preferencesService,
+                new I18NServiceImpl(preferencesService)
         );
 
         completeTask(countDownLatchContext);

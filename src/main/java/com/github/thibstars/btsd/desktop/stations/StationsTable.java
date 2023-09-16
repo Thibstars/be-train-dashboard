@@ -1,8 +1,11 @@
 package com.github.thibstars.btsd.desktop.stations;
 
+import com.github.thibstars.btsd.desktop.i18n.I18NController;
+import com.github.thibstars.btsd.desktop.listeners.LocaleChangeListener;
 import com.github.thibstars.btsd.irail.model.Station;
 import java.awt.HeadlessException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import javax.swing.JScrollPane;
@@ -18,7 +21,7 @@ import javax.swing.table.TableRowSorter;
 /**
  * @author Thibault Helsmoortel
  */
-public class StationsTable extends JTable {
+public class StationsTable extends JTable implements LocaleChangeListener {
 
     private static final String FILTER_IGNORE_CASE_REGEX = "(?i)";
 
@@ -71,5 +74,20 @@ public class StationsTable extends JTable {
     protected void filterStationsTableByName(String name) {
         ((TableRowSorter<StationsTableModel>) getRowSorter())
                 .setRowFilter(RowFilter.regexFilter(FILTER_IGNORE_CASE_REGEX + name));
+    }
+
+    @Override
+    public void localeChanged(Locale locale, I18NController i18NController) {
+        model.setColumnIdentifiers(
+                List.of(
+                        i18NController.getMessage("station.id"),
+                        i18NController.getMessage("station.name")
+                ).toArray()
+        );
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(model);
+        setRowSorter(sorter);
+
+        List<SortKey> sortKeys = List.of(new RowSorter.SortKey(1, SortOrder.ASCENDING));
+        sorter.setSortKeys(sortKeys);
     }
 }

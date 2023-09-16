@@ -51,4 +51,26 @@ class I18NServiceImplTest {
 
         Mockito.verify(preferencesService).put(LOCALE_PREFERENCE_KEY, locale.toString());
     }
+
+    @Test
+    void shouldGetMessage() {
+        String key = "main.title";
+
+        String result = i18NService.getMessage(key);
+
+        Assertions.assertNotNull(result, "Result must not be null.");
+        Assertions.assertFalse(result.isBlank(), "Result must not be blank.");
+        Assertions.assertEquals("Belgian Train Station Dashboard", result, "Result must match the expected.");
+    }
+
+    @Test
+    void shouldGetKeyWhenMessageDoesNotExist() {
+        String key = "unknown.key";
+
+        String result = i18NService.getMessage(key);
+
+        Assertions.assertNotNull(result, "Result must not be null.");
+        Assertions.assertFalse(result.isBlank(), "Result must not be blank.");
+        Assertions.assertEquals(key, result, "Result must match the key.");
+    }
 }

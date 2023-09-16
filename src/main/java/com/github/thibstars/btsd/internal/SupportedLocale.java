@@ -9,7 +9,9 @@ import java.util.Optional;
  */
 public enum SupportedLocale {
 
-    ENGLISH(Locale.ENGLISH);
+    ENGLISH(Locale.ENGLISH),
+
+    DUTCH(new Locale("nl"));
 
     private final Locale locale;
 

@@ -1,30 +1,56 @@
 package com.github.thibstars.btsd.desktop.stations;
 
 import com.github.thibstars.btsd.desktop.components.CaptionedLabel;
+import com.github.thibstars.btsd.desktop.i18n.I18NController;
+import com.github.thibstars.btsd.desktop.listeners.LocaleChangeListener;
 import com.github.thibstars.btsd.irail.model.Station;
 import java.awt.GridLayout;
+import java.util.Locale;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 /**
  * @author Thibault Helsmoortel
  */
-public class StationPanel extends JPanel {
+public class StationPanel extends JPanel implements LocaleChangeListener {
+
+    private final transient Station station;
+
+    private final CaptionedLabel lblId;
+
+    private final CaptionedLabel lblName;
+
+    private final CaptionedLabel lblDefaultName;
+
+    private final CaptionedLabel lblCoordinates;
 
     public StationPanel(Station station) {
+        this.station = station;
+
         setLayout(new GridLayout(2, 2));
-        setBorder(BorderFactory.createTitledBorder("Station - " + station.name()));
 
-        CaptionedLabel lblId = new CaptionedLabel("Id:", station.id());
-        CaptionedLabel lblName = new CaptionedLabel("Name:", station.name());
-        CaptionedLabel lblStandardName = new CaptionedLabel("Default name:", station.standardName());
-        CaptionedLabel lblCoordinates = new CaptionedLabel("Coordinates:", "(" + station.locationX() + ", " + station.locationY() + ")");
-
+        this.lblId = new CaptionedLabel();
+        lblId.setText(station.id());
+        this.lblName = new CaptionedLabel();
+        lblName.setText(station.name());
+        this.lblDefaultName = new CaptionedLabel();
+        lblDefaultName.setText(station.standardName());
+        this.lblCoordinates = new CaptionedLabel();
+        lblCoordinates.setText("(" + station.locationX() + ", " + station.locationY() + ")");
         add(lblId);
         add(lblName);
-        add(lblStandardName);
+        add(lblDefaultName);
         add(lblCoordinates);
 
         setVisible(true);
+    }
+
+    @Override
+    public void localeChanged(Locale locale, I18NController i18NController) {
+        setBorder(BorderFactory.createTitledBorder(i18NController.getMessage("station.border.title") + " - " + station.name()));
+        lblId.setCaption(i18NController.getMessage("station.id") + ":");
+        lblName.setCaption(i18NController.getMessage("station.name") + ":");
+        lblDefaultName.setCaption(i18NController.getMessage("station.default.name") + ":");
+        lblCoordinates.setCaption(i18NController.getMessage("station.coordinates") + ":");
     }
 }

@@ -1,7 +1,9 @@
 package com.github.thibstars.btsd.desktop.main;
 
 import com.github.thibstars.btsd.desktop.about.AboutController;
+import com.github.thibstars.btsd.desktop.i18n.I18NController;
 import com.github.thibstars.btsd.desktop.issue.ReportIssueController;
+import com.github.thibstars.btsd.desktop.listeners.LocaleChangeListener;
 import com.github.thibstars.btsd.desktop.stations.StationsController;
 import java.awt.Dimension;
 import org.junit.jupiter.api.Test;
@@ -29,6 +31,9 @@ class MainControllerTest {
     @Mock
     private ReportIssueController reportIssueController;
 
+    @Mock
+    private I18NController i18NController;
+
     @InjectMocks
     private MainController mainController;
 
@@ -45,7 +50,8 @@ class MainControllerTest {
 
         mainController.setAppName(appName);
 
-        Mockito.verify(aboutController).setAppName(appName);
+        Mockito.verify(aboutController).setAppName(appName, i18NController);
+        Mockito.verifyNoInteractions(i18NController);
     }
 
     @Test
@@ -85,5 +91,30 @@ class MainControllerTest {
         mainController.showReportIssueView();
 
         Mockito.verify(reportIssueController).showView();
+    }
+
+    @Test
+    void shouldAddLocaleChangeListener() {
+        LocaleChangeListener listener = Mockito.mock(LocaleChangeListener.class);
+
+        mainController.addLocaleChangeListener(listener);
+
+        Mockito.verify(i18NController).addListener(listener);
+    }
+
+    @Test
+    void shouldGetMessage() {
+        String key = "key";
+
+        mainController.getMessage(key);
+
+        Mockito.verify(i18NController).getMessage(key);
+    }
+
+    @Test
+    void shouldShowLocaleView() {
+        mainController.showLocaleView();
+
+        Mockito.verify(i18NController).showView();
     }
 }

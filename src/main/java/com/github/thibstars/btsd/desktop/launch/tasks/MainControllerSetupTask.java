@@ -1,5 +1,6 @@
 package com.github.thibstars.btsd.desktop.launch.tasks;
 
+import com.github.thibstars.btsd.desktop.i18n.I18NController;
 import com.github.thibstars.btsd.desktop.launch.CountDownLatchContext;
 import com.github.thibstars.btsd.desktop.main.MainController;
 import com.github.thibstars.btsd.desktop.main.MainFrame;
@@ -27,11 +28,16 @@ public class MainControllerSetupTask extends Creator<MainController> implements 
         await(dependentCountDownLatchContext);
 
         Controllers controllers = controllersSetupTask.getCreatable();
+        I18NController i18NController = controllers.i18NController();
+        MainFrame mainFrame = new MainFrame();
+        i18NController.addListener(mainFrame);
+
         this.creatable = new MainController(
-                new MainFrame(),
+                mainFrame,
                 controllers.aboutController(),
                 controllers.stationsController(),
-                controllers.reportIssueController()
+                controllers.reportIssueController(),
+                i18NController
         );
 
         completeTask(countDownLatchContext);
