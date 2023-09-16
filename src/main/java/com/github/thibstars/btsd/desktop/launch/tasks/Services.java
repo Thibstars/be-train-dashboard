@@ -12,7 +12,8 @@ public record Services(
 
         LiveBoardService liveBoardService,
 
-        StationService stationService
-) {
+        StationService stationService,
+        com.github.thibstars.btsd.internal.PreferencesService preferencesService,
+        com.github.thibstars.btsd.internal.I18NService i18NService) {
 
 }

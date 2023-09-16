@@ -1,7 +1,9 @@
 package com.github.thibstars.btsd.desktop.main;
 
 import com.github.thibstars.btsd.desktop.about.AboutController;
+import com.github.thibstars.btsd.desktop.i18n.I18NController;
 import com.github.thibstars.btsd.desktop.issue.ReportIssueController;
+import com.github.thibstars.btsd.desktop.listeners.LocaleChangeListener;
 import com.github.thibstars.btsd.desktop.stations.StationsController;
 import java.awt.Dimension;
 import javax.swing.JScrollPane;
@@ -19,11 +21,15 @@ public class MainController {
 
     private final ReportIssueController reportIssueController;
 
-    public MainController(MainFrame mainFrame, AboutController aboutController, StationsController stationsController, ReportIssueController reportIssueController) {
+    private final I18NController i18NController;
+
+    public MainController(MainFrame mainFrame, AboutController aboutController, StationsController stationsController, ReportIssueController reportIssueController,
+            I18NController i18NController) {
         this.mainFrame = mainFrame;
         this.aboutController = aboutController;
         this.stationsController = stationsController;
         this.reportIssueController = reportIssueController;
+        this.i18NController = i18NController;
 
         mainFrame.init(this);
     }
@@ -33,7 +39,7 @@ public class MainController {
     }
 
     protected void setAppName(String appName) {
-        aboutController.setAppName(appName);
+        aboutController.setAppName(appName, i18NController);
     }
 
     protected void showAboutView() {
@@ -54,5 +60,17 @@ public class MainController {
 
     protected void showReportIssueView() {
         reportIssueController.showView();
+    }
+
+    protected void addLocaleChangeListener(LocaleChangeListener localeChangeListener) {
+        i18NController.addListener(localeChangeListener);
+    }
+
+    protected String getMessage(String key) {
+        return i18NController.getMessage(key);
+    }
+
+    public void showLocaleView() {
+        i18NController.showView();
     }
 }

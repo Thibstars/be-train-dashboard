@@ -2,6 +2,7 @@ package com.github.thibstars.btsd.desktop.launch.tasks;
 
 import com.github.thibstars.btsd.desktop.about.AboutController;
 import com.github.thibstars.btsd.desktop.about.AboutDialog;
+import com.github.thibstars.btsd.desktop.i18n.I18NController;
 import com.github.thibstars.btsd.desktop.issue.ReportIssueController;
 import com.github.thibstars.btsd.desktop.issue.ReportIssueDialog;
 import com.github.thibstars.btsd.desktop.launch.CountDownLatchContext;
@@ -34,14 +35,25 @@ public class ControllersSetupTask extends Creator<Controllers> implements Runnab
 
         Services services = servicesSetupTask.getCreatable();
 
-        LiveBoardController liveBoardController = new LiveBoardController(services.liveBoardService());
+        I18NController i18NController = new I18NController(services.i18NService());
+
+        LiveBoardController liveBoardController = new LiveBoardController(services.liveBoardService(), i18NController);
         PropertiesService propertiesService = services.propertiesService();
 
+        AboutDialog aboutDialog = new AboutDialog();
+        i18NController.addListener(aboutDialog);
+        StationsTable stationsTable = new StationsTable();
+        i18NController.addListener(stationsTable);
+        ReportIssueDialog reportIssueDialog = new ReportIssueDialog();
+        i18NController.addListener(reportIssueDialog);
+        i18NController.initLocale();
+
         this.creatable = new Controllers(
-          new AboutController(propertiesService, new AboutDialog()),
+          new AboutController(propertiesService, aboutDialog),
                 liveBoardController,
-          new StationsController(new StationsTable(), services.stationService(), liveBoardController),
-                new ReportIssueController(propertiesService, new ReportIssueDialog())
+          new StationsController(stationsTable, services.stationService(), liveBoardController),
+                new ReportIssueController(propertiesService, reportIssueDialog),
+                i18NController
         );
 
         completeTask(countDownLatchContext);

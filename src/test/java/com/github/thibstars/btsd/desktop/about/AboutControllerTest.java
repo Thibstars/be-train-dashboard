@@ -1,5 +1,6 @@
 package com.github.thibstars.btsd.desktop.about;
 
+import com.github.thibstars.btsd.desktop.i18n.I18NController;
 import com.github.thibstars.btsd.internal.PropertiesService;
 import java.util.Optional;
 import java.util.Properties;
@@ -23,6 +24,9 @@ class AboutControllerTest {
     @Mock
     private AboutDialog aboutDialog;
 
+    @Mock
+    private I18NController i18NController;
+
     private AboutController aboutController;
 
     @BeforeEach
@@ -37,9 +41,10 @@ class AboutControllerTest {
     @Test
     void shouldSetAppName() {
         String appName = "The Greatest";
-        aboutController.setAppName(appName);
+        aboutController.setAppName(appName, i18NController);
 
-        Mockito.verify(aboutDialog).setAppName(appName);
+        Mockito.verify(aboutDialog).setAppName(appName, i18NController);
+        Mockito.verifyNoInteractions(i18NController);
     }
 
     @Test

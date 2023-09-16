@@ -26,12 +26,14 @@ public class DesktopLauncher {
 
         var preRequisitesCountdownLatchContext = new CountDownLatchContext(2, "Prerequisites");
         var servicesCountdownLatchContext = new CountDownLatchContext(1, "Services");
+        var configurationCountdownLatchContext = new CountDownLatchContext(1, "Configuration");
         var controllerCountDownLatchContext = new CountDownLatchContext(1, "Controllers");
         var launchCountDownLatchContext = new CountDownLatchContext(1, "Launch");
 
         List<CountDownLatchContext> latchContexts = List.of(
                 preRequisitesCountdownLatchContext,
                 servicesCountdownLatchContext,
+                configurationCountdownLatchContext,
                 controllerCountDownLatchContext,
                 launchCountDownLatchContext
         );
@@ -63,12 +65,14 @@ public class DesktopLauncher {
         var prerequisitesSetupTask = new PrerequisitesSetupTask(preRequisitesCountdownLatchContext);
         var iconSetupTask = new IconSetupTask(preRequisitesCountdownLatchContext, launchFrame);
         var servicesSetupTask = new ServicesSetupTask(servicesCountdownLatchContext, preRequisitesCountdownLatchContext, prerequisitesSetupTask);
+        var localeSetupTask = new LocaleConfigurationSetupTask(configurationCountdownLatchContext, servicesCountdownLatchContext, servicesSetupTask);
         var controllersSetupTask = new ControllersSetupTask(controllerCountDownLatchContext, servicesCountdownLatchContext, servicesSetupTask);
         var mainControllerSetupTask = new MainControllerSetupTask(launchCountDownLatchContext, controllerCountDownLatchContext, controllersSetupTask);
         List<Runnable> tasks = List.of(
                 prerequisitesSetupTask,
                 iconSetupTask,
                 servicesSetupTask,
+                localeSetupTask,
                 controllersSetupTask,
                 mainControllerSetupTask,
                 () -> launchApplication(launchCountDownLatchContext, mainControllerSetupTask)

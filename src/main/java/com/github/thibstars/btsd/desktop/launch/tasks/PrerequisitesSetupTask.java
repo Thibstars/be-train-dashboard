@@ -17,7 +17,10 @@ public class PrerequisitesSetupTask extends Creator<Prerequisites> implements Ru
 
     @Override
     public void run() {
-        this.creatable = new Prerequisites(new OkHttpClient(), new ObjectMapper());
+        this.creatable = new Prerequisites(
+                new OkHttpClient(),
+                new ObjectMapper()
+        );
 
         completeTask(countDownLatchContext);
     }

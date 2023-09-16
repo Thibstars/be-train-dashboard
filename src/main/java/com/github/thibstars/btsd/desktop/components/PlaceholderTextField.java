@@ -55,6 +55,8 @@ public class PlaceholderTextField extends JTextField {
 
     public void setPlaceholder(final String placeholder) {
         this.placeholder = placeholder;
+        setText(""); // Force redraw
+        repaint(); // This is needed when switching locale more than once, redraw does not happen otherwise
     }
 
 }

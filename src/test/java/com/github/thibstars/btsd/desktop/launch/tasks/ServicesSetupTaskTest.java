@@ -48,6 +48,7 @@ class ServicesSetupTaskTest {
         Assertions.assertNotNull(result.propertiesService(), "PropertiesService must not be null.");
         Assertions.assertNotNull(result.liveBoardService(), "LiveBoardService must not be null.");
         Assertions.assertNotNull(result.stationService(), "StationService must not be null.");
+        Assertions.assertNotNull(result.i18NService(), "I18NService must not be null.");
 
         Mockito.verify(prerequisitesSetupTask).getCreatable();
 
