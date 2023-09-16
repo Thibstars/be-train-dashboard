@@ -6,7 +6,7 @@
 
     <groupId>com.github.thibstars</groupId>
     <artifactId>be-train-station-dashboard</artifactId>
-    <version>1.0</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <name>Belgian Train Station Dashboard</name>
     <description>Desktop application aggregating data of Belgian train stations.</description>
