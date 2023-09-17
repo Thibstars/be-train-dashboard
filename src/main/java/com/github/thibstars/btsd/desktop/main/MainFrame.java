@@ -9,9 +9,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Locale;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
@@ -31,13 +29,7 @@ public class MainFrame extends JFrame implements LocaleChangeListener {
 
     private PlaceholderTextField tfNameFilter;
 
-    private JMenu mainMenu;
-
-    private JMenuItem miAbout;
-
-    private JMenuItem miReportIssue;
-
-    private JMenuItem miChangeLocale;
+    private MainMenu mainMenu;
 
     protected void init(MainController mainController) {
         this.mainController = mainController;
@@ -78,16 +70,7 @@ public class MainFrame extends JFrame implements LocaleChangeListener {
 
     private void createJMenuBar() {
         JMenuBar menuBar = new JMenuBar();
-        mainMenu = new JMenu(mainController.getMessage("main.menu.general"));
-        miAbout = new JMenuItem(mainController.getMessage("main.menu.general.about"));
-        miAbout.addActionListener(event -> mainController.showAboutView());
-        miReportIssue = new JMenuItem(mainController.getMessage("main.menu.general.issue"));
-        miReportIssue.addActionListener(event -> mainController.showReportIssueView());
-        miChangeLocale = new JMenuItem(mainController.getMessage("main.menu.general.locale"));
-        miChangeLocale.addActionListener(event -> mainController.showLocaleView());
-        mainMenu.add(miAbout);
-        mainMenu.add(miReportIssue);
-        mainMenu.add(miChangeLocale);
+        mainMenu = new MainMenu(mainController);
         menuBar.add(mainMenu);
         setJMenuBar(menuBar);
     }
@@ -96,9 +79,6 @@ public class MainFrame extends JFrame implements LocaleChangeListener {
     public void localeChanged(Locale locale, I18NController i18NController) {
         setTitle(i18NController.getMessage("main.title"));
         tfNameFilter.setPlaceholder(i18NController.getMessage("main.search"));
-        mainMenu.setText(i18NController.getMessage("main.menu.general"));
-        miAbout.setText(i18NController.getMessage("main.menu.general.about"));
-        miReportIssue.setText(i18NController.getMessage("main.menu.general.issue"));
-        miChangeLocale.setText(i18NController.getMessage("main.menu.general.locale"));
+        mainMenu.localeChanged(locale, i18NController);
     }
 }
