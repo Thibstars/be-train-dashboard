@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -73,10 +74,16 @@ public class StationServiceImpl implements StationService {
 
     @Override
     public Set<Station> getStations(String language) {
-        String languageOrFallback = SUPPORTED_LANGS.stream()
+        Optional<String> optionalLanguage = SUPPORTED_LANGS.stream()
                 .filter(lang -> lang.equals(language))
-                .findFirst()
-                .orElse(SUPPORTED_LANGS.get(0));
+                .findFirst();
+
+        String fallbackLanguage = SUPPORTED_LANGS.get(0);
+        if (optionalLanguage.isEmpty()) {
+            LOGGER.warn("Language {} is not supported, using {} as a fallback.", language, fallbackLanguage);
+        }
+
+        String languageOrFallback = optionalLanguage.orElse(fallbackLanguage);
 
         return new HashSet<>(cache.getUnchecked(languageOrFallback).values());
     }
