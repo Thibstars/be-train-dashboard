@@ -1,5 +1,6 @@
 package com.github.thibstars.btsd.desktop.stations;
 
+import com.github.thibstars.btsd.desktop.i18n.I18NController;
 import com.github.thibstars.btsd.desktop.liveboard.LiveBoardController;
 import com.github.thibstars.btsd.irail.client.StationService;
 import java.awt.Dimension;
@@ -14,14 +15,20 @@ public class StationsController {
 
     private final StationsTable stationsTable;
 
+    private final StationService stationService;
+
     private final LiveBoardController liveBoardController;
 
-    public StationsController(StationsTable stationsTable, StationService stationService,
-            LiveBoardController liveBoardController) {
-        this.stationsTable = stationsTable;
-        this.liveBoardController = liveBoardController;
+    private final I18NController i18NController;
 
-        stationsTable.setStations(stationService.getStations());
+    public StationsController(StationsTable stationsTable, StationService stationService,
+            LiveBoardController liveBoardController, I18NController i18NController) {
+        this.stationsTable = stationsTable;
+        this.stationService = stationService;
+        this.liveBoardController = liveBoardController;
+        this.i18NController = i18NController;
+
+        stationsTable.init(this);
     }
 
     public void initStationsTable(Dimension dimension) {
@@ -43,5 +50,9 @@ public class StationsController {
 
     public void filterStationsTableByName(String name) {
         stationsTable.filterStationsTableByName(name);
+    }
+
+    protected void fetchStations() {
+        stationsTable.setStations(stationService.getStations(i18NController.getPrefferedLocale().getLanguage()));
     }
 }

@@ -2,6 +2,7 @@ package com.github.thibstars.btsd.irail.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.thibstars.btsd.irail.exceptions.ClientException;
+import com.github.thibstars.btsd.irail.helper.LanguageService;
 import com.github.thibstars.btsd.irail.model.LiveBoard;
 import java.io.IOException;
 import java.util.Objects;
@@ -20,31 +21,38 @@ public class LiveBoardServiceImpl implements LiveBoardService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LiveBoardServiceImpl.class);
 
-    private static final String URL = "https://api.irail.be/liveboard/?id=${id}&arrdep=departure&lang=en&format=json&alerts=false";
+    private static final String ID_PLACEHOLDER = "${id}";
+
+    private static final String LANG_PLACEHOLDER = "${lang}";
+
+    private static final String URL = "https://api.irail.be/liveboard/?id=" + ID_PLACEHOLDER + "&arrdep=departure&lang=" + LANG_PLACEHOLDER + "&format=json&alerts=false";
 
     private final OkHttpClient client;
 
     private final ObjectMapper objectMapper;
 
-    public LiveBoardServiceImpl(OkHttpClient client, ObjectMapper objectMapper) {
+    private final LanguageService languageService;
+
+    public LiveBoardServiceImpl(OkHttpClient client, ObjectMapper objectMapper, LanguageService languageService) {
         this.client = client;
         this.objectMapper = objectMapper;
+        this.languageService = languageService;
     }
 
     @Override
-    public Optional<LiveBoard> getForStation(String id) {
+    public Optional<LiveBoard> getForStation(String id, String language) {
         try {
-            return Optional.of(fetchLiveBoard(id));
+            return Optional.of(fetchLiveBoard(id, language));
         } catch (IOException e) {
             throw new ClientException(e);
         }
     }
 
-    private LiveBoard fetchLiveBoard(String id) throws IOException {
+    private LiveBoard fetchLiveBoard(String id, String language) throws IOException {
         LOGGER.info("Fetching live board for station: {}", id);
 
         Request request = new Request.Builder()
-                .url(URL.replace("${id}", id))
+                .url(URL.replace(ID_PLACEHOLDER, id).replace(LANG_PLACEHOLDER, languageService.getLanguageOrFallback(language)))
                 .build();
 
         ResponseBody responseBody;

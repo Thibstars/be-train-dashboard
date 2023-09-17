@@ -29,6 +29,8 @@ public class StationsTable extends JTable implements LocaleChangeListener {
 
     private transient Set<Station> stations;
 
+    private transient StationsController stationsController;
+
     public StationsTable() throws HeadlessException {
         model = new StationsTableModel();
         model.addColumn("id");
@@ -62,10 +64,12 @@ public class StationsTable extends JTable implements LocaleChangeListener {
         this.stations = stations;
         model.setRowCount(0);
         stations.forEach(station -> model.addRow(new Object[] {station.id(), station.name()}));
+        model.fireTableDataChanged();
     }
 
     protected JScrollPane getScrollPane() {
-        JScrollPane spTable = new JScrollPane(this, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane spTable = new JScrollPane(this, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         spTable.setViewportView(this);
 
         return spTable;
@@ -78,6 +82,8 @@ public class StationsTable extends JTable implements LocaleChangeListener {
 
     @Override
     public void localeChanged(Locale locale, I18NController i18NController) {
+        stationsController.fetchStations();
+
         model.setColumnIdentifiers(
                 List.of(
                         i18NController.getMessage("station.id"),
@@ -89,5 +95,12 @@ public class StationsTable extends JTable implements LocaleChangeListener {
 
         List<SortKey> sortKeys = List.of(new RowSorter.SortKey(1, SortOrder.ASCENDING));
         sorter.setSortKeys(sortKeys);
+
+        stationsController.fetchStations();
+    }
+
+    public void init(StationsController stationsController) {
+        this.stationsController = stationsController;
+        stationsController.fetchStations();
     }
 }

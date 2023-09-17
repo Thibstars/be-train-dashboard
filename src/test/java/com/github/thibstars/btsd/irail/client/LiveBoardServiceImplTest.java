@@ -1,6 +1,7 @@
 package com.github.thibstars.btsd.irail.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.thibstars.btsd.irail.helper.LanguageService;
 import com.github.thibstars.btsd.irail.model.LiveBoard;
 import java.io.IOException;
 import okhttp3.Call;
@@ -22,6 +23,7 @@ class LiveBoardServiceImplTest {
     void shouldGetForStation() throws IOException {
         OkHttpClient client = Mockito.mock(OkHttpClient.class);
         ObjectMapper objectMapper = Mockito.mock(ObjectMapper.class);
+        LanguageService languageService = Mockito.mock(LanguageService.class);
 
         Call call = Mockito.mock(Call.class);
         Response response = Mockito.mock(Response.class);
@@ -84,9 +86,11 @@ class LiveBoardServiceImplTest {
         LiveBoard liveBoard = Mockito.mock(LiveBoard.class);
         Mockito.when(objectMapper.readValue(responseBody.string(), LiveBoard.class)).thenReturn(liveBoard);
 
-        LiveBoardService liveBoardService = new LiveBoardServiceImpl(client, objectMapper);
+        String language = "en";
+        Mockito.when(languageService.getLanguageOrFallback(ArgumentMatchers.anyString())).thenReturn(language);
+        LiveBoardService liveBoardService = new LiveBoardServiceImpl(client, objectMapper, languageService);
 
-        LiveBoard result = liveBoardService.getForStation("6").orElseThrow();
+        LiveBoard result = liveBoardService.getForStation("6", language).orElseThrow();
 
         Assertions.assertNotNull(result, "Result must not be null.");
         Assertions.assertEquals(liveBoard, result, "Result must match the expected.");

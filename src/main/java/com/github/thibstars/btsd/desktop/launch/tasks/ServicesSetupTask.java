@@ -8,6 +8,8 @@ import com.github.thibstars.btsd.internal.PreferencesServiceImpl;
 import com.github.thibstars.btsd.internal.PropertiesServiceImpl;
 import com.github.thibstars.btsd.irail.client.LiveBoardServiceImpl;
 import com.github.thibstars.btsd.irail.client.StationServiceImpl;
+import com.github.thibstars.btsd.irail.helper.LanguageService;
+import com.github.thibstars.btsd.irail.helper.LanguageServiceImpl;
 import okhttp3.OkHttpClient;
 
 /**
@@ -38,10 +40,12 @@ public class ServicesSetupTask extends Creator<Services> implements Runnable, La
 
         PreferencesService preferencesService = new PreferencesServiceImpl();
 
+        LanguageService languageService = new LanguageServiceImpl();
+
         this.creatable = new Services(
                 new PropertiesServiceImpl(),
-                new LiveBoardServiceImpl(okHttpClient, objectMapper),
-                new StationServiceImpl(okHttpClient, objectMapper),
+                new LiveBoardServiceImpl(okHttpClient, objectMapper, languageService),
+                new StationServiceImpl(okHttpClient, objectMapper, languageService),
                 preferencesService,
                 new I18NServiceImpl(preferencesService)
         );

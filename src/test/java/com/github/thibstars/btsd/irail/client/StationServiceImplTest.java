@@ -1,6 +1,7 @@
 package com.github.thibstars.btsd.irail.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.thibstars.btsd.irail.helper.LanguageService;
 import com.github.thibstars.btsd.irail.model.Station;
 import com.github.thibstars.btsd.irail.model.Stations;
 import java.io.IOException;
@@ -24,6 +25,7 @@ class StationServiceImplTest {
     void shouldGetStations() throws IOException {
         OkHttpClient client = Mockito.mock(OkHttpClient.class);
         ObjectMapper objectMapper = Mockito.mock(ObjectMapper.class);
+        LanguageService languageService = Mockito.mock(LanguageService.class);
 
         Call call = Mockito.mock(Call.class);
         Response response = Mockito.mock(Response.class);
@@ -50,9 +52,12 @@ class StationServiceImplTest {
         Stations stations = new Stations(Set.of(station));
         Mockito.when(objectMapper.readValue(responseBody.string(), Stations.class)).thenReturn(stations);
 
-        StationServiceImpl stationService = new StationServiceImpl(client, objectMapper);
+        String language = "en";
+        Mockito.when(languageService.getLanguageOrFallback(ArgumentMatchers.anyString())).thenReturn(language);
+        Mockito.when(languageService.getSupportedLanguages()).thenReturn(Set.of("en"));
+        StationServiceImpl stationService = new StationServiceImpl(client, objectMapper, languageService);
 
-        Set<Station> result = stationService.getStations();
+        Set<Station> result = stationService.getStations(language);
 
         Assertions.assertNotNull(result, "Result must not be null.");
         Assertions.assertFalse(result.isEmpty(), "Result must not be empty.");

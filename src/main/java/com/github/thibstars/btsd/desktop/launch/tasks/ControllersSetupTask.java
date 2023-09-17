@@ -46,15 +46,16 @@ public class ControllersSetupTask extends Creator<Controllers> implements Runnab
         i18NController.addListener(stationsTable);
         ReportIssueDialog reportIssueDialog = new ReportIssueDialog();
         i18NController.addListener(reportIssueDialog);
-        i18NController.initLocale();
 
         this.creatable = new Controllers(
           new AboutController(propertiesService, aboutDialog),
                 liveBoardController,
-          new StationsController(stationsTable, services.stationService(), liveBoardController),
+          new StationsController(stationsTable, services.stationService(), liveBoardController, i18NController),
                 new ReportIssueController(propertiesService, reportIssueDialog),
                 i18NController
         );
+
+        i18NController.initLocale();
 
         completeTask(countDownLatchContext);
     }
