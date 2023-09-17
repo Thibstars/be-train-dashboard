@@ -52,7 +52,7 @@ class StationServiceImplTest {
 
         StationServiceImpl stationService = new StationServiceImpl(client, objectMapper);
 
-        Set<Station> result = stationService.getStations();
+        Set<Station> result = stationService.getStations("en");
 
         Assertions.assertNotNull(result, "Result must not be null.");
         Assertions.assertFalse(result.isEmpty(), "Result must not be empty.");

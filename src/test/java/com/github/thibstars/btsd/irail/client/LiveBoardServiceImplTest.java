@@ -86,7 +86,7 @@ class LiveBoardServiceImplTest {
 
         LiveBoardService liveBoardService = new LiveBoardServiceImpl(client, objectMapper);
 
-        LiveBoard result = liveBoardService.getForStation("6").orElseThrow();
+        LiveBoard result = liveBoardService.getForStation("6", "en").orElseThrow();
 
         Assertions.assertNotNull(result, "Result must not be null.");
         Assertions.assertEquals(liveBoard, result, "Result must match the expected.");

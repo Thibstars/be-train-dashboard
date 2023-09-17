@@ -13,6 +13,6 @@ public interface StationService {
      *
      * @return a set of all available Stations
      */
-    Set<Station> getStations();
+    Set<Station> getStations(String language);
 
 }

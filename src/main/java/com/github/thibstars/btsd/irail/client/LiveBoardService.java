@@ -11,8 +11,9 @@ public interface LiveBoardService {
     /**
      * Retrieves a Live Board for a given Station.
      *
-     * @param id the Station's id
+     * @param id       the Station's id
+     * @param language the language to use
      * @return a Live Board for a given Station
      */
-    Optional<LiveBoard> getForStation(String id);
+    Optional<LiveBoard> getForStation(String id, String language);
 }

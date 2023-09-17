@@ -48,4 +48,8 @@ public class I18NController {
     public void initLocale() {
         changeLocale(i18NService.getPreferredLocale());
     }
+
+    public Locale getPrefferedLocale() {
+        return i18NService.getPreferredLocale();
+    }
 }

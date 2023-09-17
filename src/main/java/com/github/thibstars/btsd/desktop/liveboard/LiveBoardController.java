@@ -19,7 +19,7 @@ public class LiveBoardController {
     }
 
     public void showLiveBoardForStation(String id, Dimension dimension) {
-        liveBoardService.getForStation(id)
+        liveBoardService.getForStation(id, i18NController.getPrefferedLocale().getLanguage())
                 .ifPresent(liveBoard -> {
                     LiveBoardFrame liveBoardFrame = new LiveBoardFrame(liveBoard, dimension);
                     i18NController.addListener(liveBoardFrame);
