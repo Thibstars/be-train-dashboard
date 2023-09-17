@@ -2,6 +2,7 @@ package com.github.thibstars.btsd.irail.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.thibstars.btsd.irail.exceptions.ClientException;
+import com.github.thibstars.btsd.irail.helper.LanguageService;
 import com.github.thibstars.btsd.irail.model.LiveBoard;
 import java.io.IOException;
 import java.util.Objects;
@@ -30,9 +31,12 @@ public class LiveBoardServiceImpl implements LiveBoardService {
 
     private final ObjectMapper objectMapper;
 
-    public LiveBoardServiceImpl(OkHttpClient client, ObjectMapper objectMapper) {
+    private final LanguageService languageService;
+
+    public LiveBoardServiceImpl(OkHttpClient client, ObjectMapper objectMapper, LanguageService languageService) {
         this.client = client;
         this.objectMapper = objectMapper;
+        this.languageService = languageService;
     }
 
     @Override
@@ -48,7 +52,7 @@ public class LiveBoardServiceImpl implements LiveBoardService {
         LOGGER.info("Fetching live board for station: {}", id);
 
         Request request = new Request.Builder()
-                .url(URL.replace(ID_PLACEHOLDER, id).replace(LANG_PLACEHOLDER, language))
+                .url(URL.replace(ID_PLACEHOLDER, id).replace(LANG_PLACEHOLDER, languageService.getLanguageOrFallback(language)))
                 .build();
 
         ResponseBody responseBody;

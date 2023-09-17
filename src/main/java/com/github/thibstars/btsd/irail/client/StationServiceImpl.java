@@ -2,6 +2,7 @@ package com.github.thibstars.btsd.irail.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.thibstars.btsd.irail.exceptions.ClientException;
+import com.github.thibstars.btsd.irail.helper.LanguageService;
 import com.github.thibstars.btsd.irail.model.Station;
 import com.github.thibstars.btsd.irail.model.Stations;
 import com.google.common.cache.CacheBuilder;
@@ -11,10 +12,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -37,17 +36,18 @@ public class StationServiceImpl implements StationService {
 
     private static final String URL = "https://api.irail.be/stations?format=json&lang=" + LANG_PLACEHOLDER;
 
-    private static final List<String> SUPPORTED_LANGS = List.of("en", "nl", "fr", "de");
-
     private final OkHttpClient client;
 
     private final ObjectMapper objectMapper;
 
+    private final LanguageService languageService;
+
     private final LoadingCache<String, Map<String, Station>> cache;
 
-    public StationServiceImpl(OkHttpClient client, ObjectMapper objectMapper) {
+    public StationServiceImpl(OkHttpClient client, ObjectMapper objectMapper, LanguageService languageService) {
         this.client = client;
         this.objectMapper = objectMapper;
+        this.languageService = languageService;
         CacheLoader<String, Map<String, Station>> loader = new CacheLoader<>() {
             @NotNull
             @Override
@@ -74,28 +74,17 @@ public class StationServiceImpl implements StationService {
 
     @Override
     public Set<Station> getStations(String language) {
-        Optional<String> optionalLanguage = SUPPORTED_LANGS.stream()
-                .filter(lang -> lang.equals(language))
-                .findFirst();
-
-        String fallbackLanguage = SUPPORTED_LANGS.get(0);
-        if (optionalLanguage.isEmpty()) {
-            LOGGER.warn("Language {} is not supported, using {} as a fallback.", language, fallbackLanguage);
-        }
-
-        String languageOrFallback = optionalLanguage.orElse(fallbackLanguage);
-
-        return new HashSet<>(cache.getUnchecked(languageOrFallback).values());
+        return new HashSet<>(cache.getUnchecked(languageService.getLanguageOrFallback(language)).values());
     }
 
     private Map<String, Map<String, Station>> getAllStations() {
-        return cache.getAllPresent(SUPPORTED_LANGS);
+        return cache.getAllPresent(languageService.getSupportedLanguages());
     }
 
     private Map<String, Map<String, Station>> fetchAllStations() throws IOException {
         Map<String, Map<String, Station>> stationMap = new HashMap<>();
 
-        for (String language : SUPPORTED_LANGS) {
+        for (String language : languageService.getSupportedLanguages()) {
             stationMap.put(language, fetchStations(language));
         }
 
