@@ -73,7 +73,12 @@ public class StationServiceImpl implements StationService {
 
     @Override
     public Set<Station> getStations(String language) {
-        return new HashSet<>(cache.getUnchecked(language).values());
+        String languageOrFallback = SUPPORTED_LANGS.stream()
+                .filter(lang -> lang.equals(language))
+                .findFirst()
+                .orElse(SUPPORTED_LANGS.get(0));
+
+        return new HashSet<>(cache.getUnchecked(languageOrFallback).values());
     }
 
     private Map<String, Map<String, Station>> getAllStations() {
