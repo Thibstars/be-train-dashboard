@@ -15,10 +15,10 @@ public class LiveBoardFrame extends JFrame implements LocaleChangeListener {
 
     private final LiveBoardPanel liveBoardPanel;
 
-    public LiveBoardFrame(LiveBoard liveBoard, Dimension dimension) {
+    public LiveBoardFrame(LiveBoardController liveBoardController, LiveBoard liveBoard, Dimension dimension) {
         setTitle("Live Board - " + liveBoard.station());
         setPreferredSize(dimension);
-        liveBoardPanel = new LiveBoardPanel(liveBoard);
+        liveBoardPanel = new LiveBoardPanel(liveBoardController, liveBoard);
         add(liveBoardPanel);
         pack();
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

@@ -14,6 +14,10 @@ public class PreferencesServiceImpl implements PreferencesService {
 
     private static final String PREF_KEY_PREFIX = "btsd_";
 
+    private static final String DATE_TIME_FORMAT_PREFERENCE_KEY = "dateTimeFormat";
+
+    private static final String DEFAULT_DATE_TIME_FORMAT = "dd/MM/yyyy HH:mm:ss";
+
     private final Preferences preferences;
 
     public PreferencesServiceImpl() {
@@ -32,5 +36,15 @@ public class PreferencesServiceImpl implements PreferencesService {
         LOGGER.info("Storing preference: [{}: {}]", key, value);
 
         preferences.put(PREF_KEY_PREFIX + key, value);
+    }
+
+    @Override
+    public String getDateTimeFormatPreference() {
+        return get(DATE_TIME_FORMAT_PREFERENCE_KEY).orElse(DEFAULT_DATE_TIME_FORMAT);
+    }
+
+    @Override
+    public void putDateTimeFormatPreference(String dateTimeFormat) {
+        put(DATE_TIME_FORMAT_PREFERENCE_KEY, dateTimeFormat);
     }
 }

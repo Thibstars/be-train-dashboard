@@ -3,6 +3,10 @@ package com.github.thibstars.btsd.desktop.liveboard;
 import com.github.thibstars.btsd.desktop.i18n.I18NController;
 import com.github.thibstars.btsd.irail.client.LiveBoardService;
 import java.awt.Dimension;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
@@ -30,7 +34,7 @@ class LiveBoardControllerTest {
     void shouldShowLiveBoardForStation() {
         String stationId = "myAwesomeStation";
         String language = "en";
-        Mockito.when(i18NController.getPrefferedLocale().getLanguage()).thenReturn(language);
+        Mockito.when(i18NController.getPreferredLocale().getLanguage()).thenReturn(language);
 
         liveBoardController.showLiveBoardForStation(stationId, new Dimension());
 
@@ -44,5 +48,22 @@ class LiveBoardControllerTest {
         liveBoardController.getMessage(key);
 
         Mockito.verify(i18NController).getMessage(key);
+    }
+
+    @Test
+    void shouldFormatDateTime() {
+        LocalDateTime now = LocalDateTime.now();
+
+        String dateTimeFormat = "dd/MM/yyyy HH:mm:ss";
+        Mockito.when(i18NController.getPreferredDateTimeFormat()).thenReturn(dateTimeFormat);
+        Locale locale = Locale.ENGLISH;
+        Mockito.when(i18NController.getPreferredLocale()).thenReturn(locale);
+
+        String expected = now.format(DateTimeFormatter.ofPattern(dateTimeFormat, locale));
+
+        String result = liveBoardController.formatDateTime(now);
+
+        Assertions.assertNotNull(result, "Result must not be null.");
+        Assertions.assertEquals(expected, result, "Result must match the expected.");
     }
 }

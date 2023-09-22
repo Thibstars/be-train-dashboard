@@ -7,6 +7,7 @@ import com.github.thibstars.btsd.desktop.issue.ReportIssueController;
 import com.github.thibstars.btsd.desktop.issue.ReportIssueDialog;
 import com.github.thibstars.btsd.desktop.launch.CountDownLatchContext;
 import com.github.thibstars.btsd.desktop.liveboard.LiveBoardController;
+import com.github.thibstars.btsd.desktop.preferences.PreferencesController;
 import com.github.thibstars.btsd.desktop.stations.StationsController;
 import com.github.thibstars.btsd.desktop.stations.StationsTable;
 import com.github.thibstars.btsd.internal.PropertiesService;
@@ -52,7 +53,8 @@ public class ControllersSetupTask extends Creator<Controllers> implements Runnab
                 liveBoardController,
           new StationsController(stationsTable, services.stationService(), liveBoardController, i18NController),
                 new ReportIssueController(propertiesService, reportIssueDialog),
-                i18NController
+                i18NController,
+                new PreferencesController(services.preferencesService(), i18NController)
         );
 
         i18NController.initLocale();

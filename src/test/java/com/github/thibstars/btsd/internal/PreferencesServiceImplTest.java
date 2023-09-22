@@ -19,6 +19,8 @@ class PreferencesServiceImplTest {
 
     private static final String PREF_KEY_PREFIX = "btsd_";
 
+    private static final String DATE_TIME_FORMAT_PREFERENCE_KEY =  "dateTimeFormat";
+
     @Mock
     private Preferences preferences;
 
@@ -58,5 +60,23 @@ class PreferencesServiceImplTest {
         preferencesService.put(key, value);
 
         Mockito.verify(preferences).put(PREF_KEY_PREFIX + key, value);
+    }
+
+    @Test
+    void shouldGetDateTimeFormatPreference() {
+        String value = "value";
+        Mockito.when(preferences.get(PREF_KEY_PREFIX + DATE_TIME_FORMAT_PREFERENCE_KEY, null)).thenReturn(value);
+
+        String result = preferencesService.getDateTimeFormatPreference();
+
+        Assertions.assertEquals(value, result, "Value must be correct.");
+    }
+
+    @Test
+    void shouldPutDateTimeFormatPreference() {
+        String value = "value";
+        preferencesService.putDateTimeFormatPreference(value);
+
+        Mockito.verify(preferences).put(PREF_KEY_PREFIX + DATE_TIME_FORMAT_PREFERENCE_KEY, value);
     }
 }

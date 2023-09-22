@@ -27,9 +27,6 @@ class I18NControllerTest {
 
     @BeforeEach
     void setUp() {
-        Locale preferredLocale = SupportedLocale.DUTCH.getLocale();
-        Mockito.when(i18NService.getPreferredLocale()).thenReturn(preferredLocale);
-
         this.i18NController = new I18NController(i18NService);
     }
 
@@ -39,7 +36,7 @@ class I18NControllerTest {
 
         i18NController.changeLocale(locale);
 
-        Mockito.verify(i18NService, Mockito.times(2)).changeLocale(locale); // One call from elsewhere
+        Mockito.verify(i18NService).changeLocale(locale);
     }
 
     @SuppressWarnings("unchecked")
@@ -79,5 +76,16 @@ class I18NControllerTest {
         spy.initLocale();
 
         Mockito.verify(spy).changeLocale(preferredLocale);
+    }
+
+    @Test
+    void shouldPreferredDateTimeFormat() {
+        String dateTimeFormat = "greatestFormatEver";
+        Mockito.when(i18NService.getPreferredDateTimeFormat()).thenReturn(dateTimeFormat);
+
+        String result = i18NController.getPreferredDateTimeFormat();
+
+        Assertions.assertNotNull(result, "Result must not be null.");
+        Assertions.assertEquals(dateTimeFormat, result, "Result must match the expected.");
     }
 }

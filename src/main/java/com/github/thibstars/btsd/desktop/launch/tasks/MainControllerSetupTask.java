@@ -37,8 +37,8 @@ public class MainControllerSetupTask extends Creator<MainController> implements 
                 controllers.aboutController(),
                 controllers.stationsController(),
                 controllers.reportIssueController(),
-                i18NController
-        );
+                i18NController,
+                controllers.preferencesController());
 
         completeTask(countDownLatchContext);
     }

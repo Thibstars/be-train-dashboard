@@ -11,4 +11,7 @@ public interface PreferencesService {
 
     void put(String key, String value);
 
+    String getDateTimeFormatPreference();
+
+    void putDateTimeFormatPreference(String dateTimeFormat);
 }

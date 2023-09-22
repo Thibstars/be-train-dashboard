@@ -53,6 +53,6 @@ public class StationsController {
     }
 
     protected void fetchStations() {
-        stationsTable.setStations(stationService.getStations(i18NController.getPrefferedLocale().getLanguage()));
+        stationsTable.setStations(stationService.getStations(i18NController.getPreferredLocale().getLanguage()));
     }
 }
