@@ -4,6 +4,7 @@ import com.github.thibstars.btsd.desktop.about.AboutController;
 import com.github.thibstars.btsd.desktop.i18n.I18NController;
 import com.github.thibstars.btsd.desktop.issue.ReportIssueController;
 import com.github.thibstars.btsd.desktop.liveboard.LiveBoardController;
+import com.github.thibstars.btsd.desktop.preferences.PreferencesController;
 import com.github.thibstars.btsd.desktop.stations.StationsController;
 
 /**
@@ -18,7 +19,9 @@ public record Controllers(
 
         ReportIssueController reportIssueController,
 
-        I18NController i18NController
+        I18NController i18NController,
+
+        PreferencesController preferencesController
 ) {
 
 }

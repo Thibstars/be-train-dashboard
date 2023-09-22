@@ -4,6 +4,7 @@ import com.github.thibstars.btsd.desktop.about.AboutController;
 import com.github.thibstars.btsd.desktop.i18n.I18NController;
 import com.github.thibstars.btsd.desktop.issue.ReportIssueController;
 import com.github.thibstars.btsd.desktop.listeners.LocaleChangeListener;
+import com.github.thibstars.btsd.desktop.preferences.PreferencesController;
 import com.github.thibstars.btsd.desktop.stations.StationsController;
 import java.awt.Dimension;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,9 @@ class MainControllerTest {
 
     @Mock
     private I18NController i18NController;
+
+    @Mock
+    private PreferencesController preferencesController;
 
     @InjectMocks
     private MainController mainController;
@@ -113,8 +117,8 @@ class MainControllerTest {
 
     @Test
     void shouldShowLocaleView() {
-        mainController.showLocaleView();
+        mainController.showPreferencesView();
 
-        Mockito.verify(i18NController).showView();
+        Mockito.verify(preferencesController).showView();
     }
 }

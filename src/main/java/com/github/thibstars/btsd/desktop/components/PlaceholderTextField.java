@@ -1,6 +1,7 @@
 package com.github.thibstars.btsd.desktop.components;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -16,6 +17,8 @@ public class PlaceholderTextField extends JTextField {
     private String placeholder;
 
     public PlaceholderTextField() {
+        setPreferredSize(new Dimension(100, 20));
+
         this.placeholder = "";
 
         this.addFocusListener(new FocusListener() {

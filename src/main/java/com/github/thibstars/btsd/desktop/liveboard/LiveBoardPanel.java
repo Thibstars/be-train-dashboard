@@ -13,6 +13,8 @@ import com.github.thibstars.btsd.irail.model.Station;
 import com.github.thibstars.btsd.irail.model.Vehicle;
 import java.awt.BorderLayout;
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
@@ -38,7 +40,7 @@ public class LiveBoardPanel extends JPanel implements LocaleChangeListener {
 
     private final DefaultTableModel departuresModel;
 
-    public LiveBoardPanel(LiveBoard liveBoard) {
+    public LiveBoardPanel(LiveBoardController liveBoardController, LiveBoard liveBoard) {
         setBorder(new EmptyBorder(10, 10, 10, 10));
         setLayout(new BorderLayout());
         this.pnlStation = new StationPanel(liveBoard.stationInfo());
@@ -66,7 +68,7 @@ public class LiveBoardPanel extends JPanel implements LocaleChangeListener {
                     delay,
                     departure.station(),
                     station != null ? station.id() : "",
-                    time,
+                    liveBoardController.formatDateTime(LocalDateTime.ofInstant(time.toInstant(), ZoneId.systemDefault())),
                     departure.vehicle(),
                     vehicle != null ? vehicle.name() : "",
                     departure.platform(),

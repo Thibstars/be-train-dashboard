@@ -60,8 +60,30 @@ public class I18NServiceImpl implements I18NService {
         return value;
     }
 
+    @Override
+    public String getMessage(String key, Locale locale) {
+        String value;
+        try {
+            value = getMessageBundle(locale).getString(key);
+        } catch (MissingResourceException e) {
+            LOGGER.warn("No value found for key: {}", key);
+            value = key;
+        }
+
+        return value;
+    }
+
+    @Override
+    public String getPreferredDateTimeFormat() {
+        return preferencesService.getDateTimeFormatPreference();
+    }
+
     private ResourceBundle getMessageBundle() {
-        return ResourceBundle.getBundle("messages", getPreferredLocale());
+        return getMessageBundle(getPreferredLocale());
+    }
+
+    private ResourceBundle getMessageBundle(Locale locale) {
+        return ResourceBundle.getBundle("messages", locale);
     }
 
     private static Locale getSystemDefaultOrElseFixedDefault() {
