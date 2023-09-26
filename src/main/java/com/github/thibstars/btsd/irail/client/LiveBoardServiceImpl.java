@@ -7,6 +7,7 @@ import com.github.thibstars.btsd.irail.model.LiveBoard;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -42,7 +43,16 @@ public class LiveBoardServiceImpl implements LiveBoardService {
     @Override
     public Optional<LiveBoard> getForStation(String id, String language) {
         try {
-            return Optional.of(fetchLiveBoard(id, language));
+            LiveBoard liveBoard = fetchLiveBoard(id, language);
+
+            if (Stream.of(liveBoard.station(), liveBoard.stationInfo(), liveBoard.departures())
+                    .allMatch(Objects::isNull)) {
+                LOGGER.warn("Retrieved unexpected response for Live Board of station: {}", id);
+
+                return Optional.empty();
+            }
+
+            return Optional.of(liveBoard);
         } catch (IOException e) {
             throw new ClientException(e);
         }

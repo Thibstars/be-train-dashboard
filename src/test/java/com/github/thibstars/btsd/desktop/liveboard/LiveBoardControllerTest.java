@@ -36,7 +36,7 @@ class LiveBoardControllerTest {
         String language = "en";
         Mockito.when(i18NController.getPreferredLocale().getLanguage()).thenReturn(language);
 
-        liveBoardController.showLiveBoardForStation(stationId, new Dimension());
+        liveBoardController.showLiveBoardForStation(null, stationId, new Dimension());
 
         Mockito.verify(liveBoardService).getForStation(stationId, language);
     }
