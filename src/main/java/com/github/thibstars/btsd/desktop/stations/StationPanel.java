@@ -36,13 +36,17 @@ public class StationPanel extends JPanel implements LocaleChangeListener {
         this.lblDefaultName = new CaptionedLabel();
         lblDefaultName.setText(station.standardName());
         this.lblCoordinates = new CaptionedLabel();
-        lblCoordinates.setText("(" + station.locationX() + ", " + station.locationY() + ")");
+        setCoordinates(station.locationX(), station.locationY());
         add(lblId);
         add(lblName);
         add(lblDefaultName);
         add(lblCoordinates);
 
         setVisible(true);
+    }
+
+    private void setCoordinates(String x, String y) {
+        lblCoordinates.setText("(" + x + ", " + y + ")");
     }
 
     @Override
@@ -52,5 +56,12 @@ public class StationPanel extends JPanel implements LocaleChangeListener {
         lblName.setCaption(i18NController.getMessage("station.name") + ":");
         lblDefaultName.setCaption(i18NController.getMessage("station.default.name") + ":");
         lblCoordinates.setCaption(i18NController.getMessage("station.coordinates") + ":");
+    }
+
+    public void update(Station station) {
+        lblId.setText(station.id());
+        lblName.setText(station.name());
+        setCoordinates(station.locationX(), station.locationY());
+        lblDefaultName.setText(station.standardName());
     }
 }

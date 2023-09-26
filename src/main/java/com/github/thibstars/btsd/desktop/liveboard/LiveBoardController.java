@@ -8,11 +8,15 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Thibault Helsmoortel
  */
 public class LiveBoardController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LiveBoardController.class);
 
     private final LiveBoardService liveBoardService;
 
@@ -39,6 +43,14 @@ public class LiveBoardController {
                                         JOptionPane.WARNING_MESSAGE
                                 )
                         ));
+    }
+
+    protected void refreshLiveBoard(LiveBoardPanel liveBoardPanel, String id) {
+        liveBoardService.getForStation(id, i18NController.getPreferredLocale().getLanguage())
+                .ifPresentOrElse(
+                        liveBoardPanel::update,
+                        () -> LOGGER.warn("Unable to refresh live board.")
+                );
     }
 
     protected String getMessage(String key) {
