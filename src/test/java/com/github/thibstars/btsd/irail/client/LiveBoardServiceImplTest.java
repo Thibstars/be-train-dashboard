@@ -83,7 +83,7 @@ class LiveBoardServiceImplTest {
         Mockito.when(call.execute()).thenReturn(response);
         Mockito.when(client.newCall(ArgumentMatchers.any(Request.class))).thenReturn(call);
 
-        LiveBoard liveBoard = Mockito.mock(LiveBoard.class);
+        LiveBoard liveBoard = Mockito.mock(LiveBoard.class, Mockito.RETURNS_DEEP_STUBS);
         Mockito.when(objectMapper.readValue(responseBody.string(), LiveBoard.class)).thenReturn(liveBoard);
 
         String language = "en";

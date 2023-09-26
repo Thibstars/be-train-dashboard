@@ -37,7 +37,7 @@ public class StationsController {
         selectionModel.addListSelectionListener(event -> {
             if (event.getValueIsAdjusting()) {
                 stationsTable.getStationInRow(stationsTable.getSelectedRow())
-                        .ifPresent(station -> liveBoardController.showLiveBoardForStation(station.id(), dimension));
+                        .ifPresent(station -> liveBoardController.showLiveBoardForStation(stationsTable, station.id(), dimension));
                 stationsTable.clearSelection();
             }
         });
