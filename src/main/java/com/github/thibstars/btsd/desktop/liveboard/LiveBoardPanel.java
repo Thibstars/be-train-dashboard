@@ -13,7 +13,6 @@ import com.github.thibstars.btsd.irail.model.Platform;
 import com.github.thibstars.btsd.irail.model.Station;
 import com.github.thibstars.btsd.irail.model.Vehicle;
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -49,7 +48,7 @@ public class LiveBoardPanel extends JPanel implements LocaleChangeListener {
 
     private final JTable tblDepartures;
 
-    public LiveBoardPanel(LiveBoardController liveBoardController, LiveBoard liveBoard) {
+    public LiveBoardPanel(LiveBoardController liveBoardController, LiveBoard liveBoard, LiveBoardFrame liveBoardFrame) {
         this.liveBoardController = liveBoardController;
         setBorder(new EmptyBorder(10, 10, 10, 10));
         setLayout(new BorderLayout());
@@ -57,7 +56,7 @@ public class LiveBoardPanel extends JPanel implements LocaleChangeListener {
 
         add(pnlStation, BorderLayout.PAGE_START);
 
-        this.pnlRefresh = new RefreshPanel();
+        this.pnlRefresh = new RefreshPanel(liveBoardFrame);
         pnlRefresh.setLastRefresh(liveBoardController.formatDateTime(LocalDateTime.now()));
         pnlRefresh.addRefreshListener(actionEvent -> liveBoardController.refreshLiveBoard(this, liveBoard.stationInfo().id()));
 
@@ -65,7 +64,7 @@ public class LiveBoardPanel extends JPanel implements LocaleChangeListener {
         Departures departures = liveBoard.departures();
         lblDepartureNumber = new CaptionedLabel();
         setDepartureNumber(departures);
-        JPanel pnlTop = new JPanel(new GridLayout(0, 2));
+        JPanel pnlTop = new JPanel();
         pnlTop.add(lblDepartureNumber);
         pnlTop.add(pnlRefresh);
         pnlContent.add(pnlTop, BorderLayout.LINE_START);
