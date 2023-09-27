@@ -1,6 +1,7 @@
 package com.github.thibstars.btsd.desktop.liveboard;
 
 import com.github.thibstars.btsd.desktop.components.CaptionedLabel;
+import com.github.thibstars.btsd.desktop.components.RefreshPanel;
 import com.github.thibstars.btsd.desktop.i18n.I18NController;
 import com.github.thibstars.btsd.desktop.listeners.LocaleChangeListener;
 import com.github.thibstars.btsd.desktop.stations.StationPanel;
@@ -18,6 +19,7 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
+import java.util.stream.IntStream;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -34,28 +36,53 @@ public class LiveBoardPanel extends JPanel implements LocaleChangeListener {
 
     private static final int SECONDS_IN_MINUTE = 60;
 
+    private final transient LiveBoardController liveBoardController;
+
     private final StationPanel pnlStation;
+
+    private final RefreshPanel pnlRefresh;
 
     private final CaptionedLabel lblDepartureNumber;
 
     private final DefaultTableModel departuresModel;
 
-    public LiveBoardPanel(LiveBoardController liveBoardController, LiveBoard liveBoard) {
+    private final JTable tblDepartures;
+
+    public LiveBoardPanel(LiveBoardController liveBoardController, LiveBoard liveBoard, LiveBoardFrame liveBoardFrame) {
+        this.liveBoardController = liveBoardController;
         setBorder(new EmptyBorder(10, 10, 10, 10));
         setLayout(new BorderLayout());
         this.pnlStation = new StationPanel(liveBoard.stationInfo());
 
         add(pnlStation, BorderLayout.PAGE_START);
 
+        this.pnlRefresh = new RefreshPanel(liveBoardFrame);
+        pnlRefresh.setLastRefresh(liveBoardController.formatDateTime(LocalDateTime.now()));
+        pnlRefresh.addRefreshListener(actionEvent -> liveBoardController.refreshLiveBoard(this, liveBoard.stationInfo().id()));
+
         JPanel pnlContent = new JPanel(new BorderLayout());
         Departures departures = liveBoard.departures();
         lblDepartureNumber = new CaptionedLabel();
-        lblDepartureNumber.setText(String.valueOf(departures.number()));
-        pnlContent.add(lblDepartureNumber, BorderLayout.LINE_START);
+        setDepartureNumber(departures);
+        JPanel pnlTop = new JPanel();
+        pnlTop.add(lblDepartureNumber);
+        pnlTop.add(pnlRefresh);
+        pnlContent.add(pnlTop, BorderLayout.LINE_START);
 
-        JTable tblDepartures = new JTable();
+        this.tblDepartures = new JTable();
         departuresModel = new DefaultTableModel();
         Arrays.stream(Departure.class.getDeclaredFields()).forEach(field -> departuresModel.addColumn(field.getName()));
+        initDepartures(departures);
+        tblDepartures.setModel(departuresModel);
+
+        pnlContent.add(new JScrollPane(tblDepartures, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.PAGE_END);
+
+        add(pnlContent, BorderLayout.PAGE_END);
+
+        setVisible(true);
+    }
+
+    private void initDepartures(Departures departures) {
         departures.departures().forEach(departure -> {
             Station station = departure.stationInfo();
             Date time = new Date(Long.parseLong(departure.time()) * MILLISECONDS_IN_SECOND);
@@ -79,24 +106,63 @@ public class LiveBoardPanel extends JPanel implements LocaleChangeListener {
                     occupancy != null ? occupancy.name() : ""
             });
         });
-        tblDepartures.setModel(departuresModel);
+    }
 
-        pnlContent.add(new JScrollPane(tblDepartures, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.PAGE_END);
+    private void setDepartureNumber(Departures departures) {
+        lblDepartureNumber.setText(String.valueOf(departures.number()));
+    }
 
-        add(pnlContent, BorderLayout.PAGE_END);
-
-        setVisible(true);
+    private void setDepartures(Departures departures) {
+        departuresModel.setRowCount(0);
+        initDepartures(departures);
+        departuresModel.fireTableDataChanged();
     }
 
     @Override
     public void localeChanged(Locale locale, I18NController i18NController) {
         pnlStation.localeChanged(locale, i18NController);
+        pnlRefresh.localeChanged(locale, i18NController);
+                departuresModel.setColumnIdentifiers(
+                        Arrays.stream(Departure.class.getDeclaredFields())
+                                .map(Field::getName)
+                                .map(fieldName -> i18NController.getMessage("live.board.departures." + fieldName))
+                                .toArray()
+                );
         lblDepartureNumber.setCaption(i18NController.getMessage("live.board.departures"));
-        departuresModel.setColumnIdentifiers(
-                Arrays.stream(Departure.class.getDeclaredFields())
-                        .map(Field::getName)
-                        .map(fieldName -> i18NController.getMessage("live.board.departures." + fieldName))
-                        .toArray()
-        );
+    }
+
+    public void update(LiveBoard liveBoard) {
+        int selectedRowCount = tblDepartures.getSelectedRowCount();
+        int selectedRow = selectedRowCount > 0 ? tblDepartures.getSelectedRow() : -1;
+        String vehicle = selectedRowCount > 0 ? (String) departuresModel.getValueAt(selectedRow, 6) : null;
+
+        pnlStation.update(liveBoard.stationInfo());
+        pnlRefresh.setLastRefresh(liveBoardController.formatDateTime(LocalDateTime.now()));
+        Departures departures = liveBoard.departures();
+        setDepartureNumber(departures);
+        setDepartures(departures);
+
+        if (selectedRowCount > 0 && vehicle != null) {
+            selectRowOfVehicleOrClear(vehicle);
+        }
+    }
+
+    private void selectRowOfVehicleOrClear(String vehicle) {
+        IntStream.rangeClosed(0, departuresModel.getRowCount())
+                .filter(rowIndex -> {
+                    try {
+                        String vehicleInRow = (String) departuresModel.getValueAt(rowIndex, 6);
+
+                        return vehicleInRow != null && vehicleInRow.equals(vehicle);
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        // This might occur when a train has departed, which would mean there is a record less
+                        return false;
+                    }
+                })
+                .findFirst()
+                .ifPresentOrElse(
+                        rowIndex -> tblDepartures.changeSelection(rowIndex, 0, false, false),
+                        tblDepartures::clearSelection
+                );
     }
 }

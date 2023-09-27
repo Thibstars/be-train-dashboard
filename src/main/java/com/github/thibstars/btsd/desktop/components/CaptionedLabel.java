@@ -1,6 +1,7 @@
 package com.github.thibstars.btsd.desktop.components;
 
 import java.awt.FlowLayout;
+import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -21,6 +22,8 @@ public class CaptionedLabel extends JPanel {
         setLayout(new FlowLayout());
         this.lblCaption = new JLabel(caption);
         this.lblText = new JLabel(text);
+        Font textFont = lblText.getFont();
+        lblText.setFont(textFont.deriveFont(textFont.getStyle() & ~Font.BOLD));
 
         add(lblCaption);
         add(lblText);

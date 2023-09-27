@@ -19,7 +19,7 @@ import javax.swing.border.EmptyBorder;
  */
 public class MainFrame extends JFrame implements LocaleChangeListener {
 
-    private static final Dimension PREFERRED_FRAME_SIZE = new Dimension(900, 600);
+    private static final Dimension PREFERRED_FRAME_SIZE = new Dimension(1000, 625);
 
     private static final EmptyBorder INSETS = new EmptyBorder(10, 10, 10, 10);
 

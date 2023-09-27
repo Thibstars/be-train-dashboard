@@ -2,10 +2,12 @@ package com.github.thibstars.btsd.desktop.liveboard;
 
 import com.github.thibstars.btsd.desktop.i18n.I18NController;
 import com.github.thibstars.btsd.irail.client.LiveBoardService;
+import com.github.thibstars.btsd.irail.model.LiveBoard;
 import java.awt.Dimension;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -65,5 +67,38 @@ class LiveBoardControllerTest {
 
         Assertions.assertNotNull(result, "Result must not be null.");
         Assertions.assertEquals(expected, result, "Result must match the expected.");
+    }
+
+    @Test
+    void shouldRefreshLiveBoard() {
+        String id = "myStation";
+
+        Locale locale = Locale.ENGLISH;
+        Mockito.when(i18NController.getPreferredLocale()).thenReturn(locale);
+
+        LiveBoardPanel liveBoardPanel = Mockito.mock(LiveBoardPanel.class);
+
+        LiveBoard liveBoard = Mockito.mock(LiveBoard.class);
+        Mockito.when(liveBoardService.getForStation(id, locale.getLanguage())).thenReturn(Optional.of(liveBoard));
+
+        liveBoardController.refreshLiveBoard(liveBoardPanel, id);
+
+        Mockito.verify(liveBoardPanel).update(liveBoard);
+    }
+
+    @Test
+    void shouldNotRefreshLiveBoard() {
+        String id = "myStation";
+
+        Locale locale = Locale.ENGLISH;
+        Mockito.when(i18NController.getPreferredLocale()).thenReturn(locale);
+
+        LiveBoardPanel liveBoardPanel = Mockito.mock(LiveBoardPanel.class);
+
+        Mockito.when(liveBoardService.getForStation(id, locale.getLanguage())).thenReturn(Optional.empty());
+
+        liveBoardController.refreshLiveBoard(liveBoardPanel, id);
+
+        Mockito.verifyNoInteractions(liveBoardPanel);
     }
 }
