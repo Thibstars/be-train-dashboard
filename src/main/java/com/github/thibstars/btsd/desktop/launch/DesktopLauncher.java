@@ -54,8 +54,8 @@ public class DesktopLauncher {
             SwingUtilities.invokeLater(() -> {
                 launchFrame.updateProgress(taskCount - tasksLeft.intValue());
                 launchFrame.updateProgressName(progressName);
-                if (tasksLeft == 0) {
-                    launchFrame.setVisible(false);
+                if (tasksLeft <= 0) {
+                    launchFrame.dispose();
                 }
             });
         };
@@ -104,8 +104,8 @@ public class DesktopLauncher {
             Runnable statusUpdater)
             throws InterruptedException {
         statusUpdater.run();
-        executorService.shutdown();
         executorService.awaitTermination(5, TimeUnit.SECONDS);
+        executorService.shutdown();
         scheduledExecutorService.shutdown();
     }
 
