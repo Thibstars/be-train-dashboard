@@ -5,6 +5,8 @@ import com.github.thibstars.btsd.irail.exceptions.ClientException;
 import com.github.thibstars.btsd.irail.helper.LanguageService;
 import com.github.thibstars.btsd.irail.model.LiveBoard;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -26,7 +28,9 @@ public class LiveBoardServiceImpl implements LiveBoardService {
 
     private static final String LANG_PLACEHOLDER = "${lang}";
 
-    private static final String URL = "https://api.irail.be/liveboard/?id=" + ID_PLACEHOLDER + "&arrdep=departure&lang=" + LANG_PLACEHOLDER + "&format=json&alerts=false";
+    private static final String TIME_PLACEHOLDER = "${time}";
+
+    private static final String URL = "https://api.irail.be/liveboard/?id=" + ID_PLACEHOLDER + "&arrdep=departure&lang=" + LANG_PLACEHOLDER + "&format=json&alerts=false&time=" + TIME_PLACEHOLDER;
 
     private final OkHttpClient client;
 
@@ -61,8 +65,13 @@ public class LiveBoardServiceImpl implements LiveBoardService {
     private LiveBoard fetchLiveBoard(String id, String language) throws IOException {
         LOGGER.info("Fetching live board for station: {}", id);
 
+        String timeString = LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("HHmm"));
+
         Request request = new Request.Builder()
-                .url(URL.replace(ID_PLACEHOLDER, id).replace(LANG_PLACEHOLDER, languageService.getLanguageOrFallback(language)))
+                .url(URL.replace(ID_PLACEHOLDER, id)
+                        .replace(LANG_PLACEHOLDER, languageService.getLanguageOrFallback(language))
+                        .replace(TIME_PLACEHOLDER, timeString))
                 .build();
 
         ResponseBody responseBody;
