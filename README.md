@@ -5,3 +5,8 @@
 # Belgian Train Station Dashboard
 
 Desktop application aggregating data of Belgian train stations.
+
+## Screenshots
+
+![The main view of the application.](./images/main_frame.png "Main view")
+![The live board.](./images/live_board.png "Live Board")
