@@ -75,7 +75,11 @@ public class LiveBoardPanel extends JPanel implements LocaleChangeListener {
         timePicker.setTime(LocalTime.now());
         timePicker.addTimeChangeListener(event -> liveBoardController.refreshLiveBoard(this, liveBoard.stationInfo().id(), event.getNewTime()));
         timePicker.setToolTipText(liveBoardController.getMessage("live.board.time.picker.tooltip"));
-        pnlRefresh.addRefreshListener(actionEvent -> liveBoardController.refreshLiveBoard(this, liveBoard.stationInfo().id(), timePicker.getTime()));
+        pnlRefresh.addRefreshListener(actionEvent -> {
+            LocalTime rightNow = LocalTime.now();
+            timePicker.setTime(rightNow);
+            liveBoardController.refreshLiveBoard(this, liveBoard.stationInfo().id(), rightNow);
+        });
 
         JPanel pnlContent = new JPanel(new BorderLayout());
         Departures departures = liveBoard.departures();
