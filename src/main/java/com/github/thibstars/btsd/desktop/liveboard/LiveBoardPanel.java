@@ -1,5 +1,6 @@
 package com.github.thibstars.btsd.desktop.liveboard;
 
+import com.github.lgooddatepicker.components.TimePicker;
 import com.github.thibstars.btsd.desktop.components.CaptionedLabel;
 import com.github.thibstars.btsd.desktop.components.RefreshPanel;
 import com.github.thibstars.btsd.desktop.i18n.I18NController;
@@ -15,6 +16,7 @@ import com.github.thibstars.btsd.irail.model.Vehicle;
 import java.awt.BorderLayout;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
@@ -24,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
@@ -42,6 +45,8 @@ public class LiveBoardPanel extends JPanel implements LocaleChangeListener {
 
     private final RefreshPanel pnlRefresh;
 
+    private final TimePicker timePicker;
+
     private final CaptionedLabel lblDepartureNumber;
 
     private final DefaultTableModel departuresModel;
@@ -58,7 +63,23 @@ public class LiveBoardPanel extends JPanel implements LocaleChangeListener {
 
         this.pnlRefresh = new RefreshPanel(liveBoardFrame);
         pnlRefresh.setLastRefresh(liveBoardController.formatDateTime(LocalDateTime.now()));
-        pnlRefresh.addRefreshListener(actionEvent -> liveBoardController.refreshLiveBoard(this, liveBoard.stationInfo().id()));
+
+        SpinnerNumberModel hourMinuteModel = new SpinnerNumberModel();
+        hourMinuteModel.setMinimum(0);
+        hourMinuteModel.setMaximum(2359);
+        LocalDateTime now = LocalDateTime.now();
+        hourMinuteModel.setValue(Integer.valueOf(now.getHour() + "" + now.getMinute()));
+
+        this.timePicker = new TimePicker();
+
+        timePicker.setTime(LocalTime.now());
+        timePicker.addTimeChangeListener(event -> liveBoardController.refreshLiveBoard(this, liveBoard.stationInfo().id(), event.getNewTime()));
+        timePicker.setToolTipText(liveBoardController.getMessage("live.board.time.picker.tooltip"));
+        pnlRefresh.addRefreshListener(actionEvent -> {
+            LocalTime rightNow = LocalTime.now();
+            timePicker.setTime(rightNow);
+            liveBoardController.refreshLiveBoard(this, liveBoard.stationInfo().id(), rightNow);
+        });
 
         JPanel pnlContent = new JPanel(new BorderLayout());
         Departures departures = liveBoard.departures();
@@ -67,6 +88,7 @@ public class LiveBoardPanel extends JPanel implements LocaleChangeListener {
         JPanel pnlTop = new JPanel();
         pnlTop.add(lblDepartureNumber);
         pnlTop.add(pnlRefresh);
+        pnlTop.add(timePicker);
         pnlContent.add(pnlTop, BorderLayout.LINE_START);
 
         this.tblDepartures = new JTable();
@@ -122,12 +144,13 @@ public class LiveBoardPanel extends JPanel implements LocaleChangeListener {
     public void localeChanged(Locale locale, I18NController i18NController) {
         pnlStation.localeChanged(locale, i18NController);
         pnlRefresh.localeChanged(locale, i18NController);
-                departuresModel.setColumnIdentifiers(
-                        Arrays.stream(Departure.class.getDeclaredFields())
-                                .map(Field::getName)
-                                .map(fieldName -> i18NController.getMessage("live.board.departures." + fieldName))
-                                .toArray()
-                );
+        timePicker.setToolTipText(i18NController.getMessage("live.board.time.picker.tooltip"));
+        departuresModel.setColumnIdentifiers(
+                Arrays.stream(Departure.class.getDeclaredFields())
+                        .map(Field::getName)
+                        .map(fieldName -> i18NController.getMessage("live.board.departures." + fieldName))
+                        .toArray()
+        );
         lblDepartureNumber.setCaption(i18NController.getMessage("live.board.departures"));
     }
 

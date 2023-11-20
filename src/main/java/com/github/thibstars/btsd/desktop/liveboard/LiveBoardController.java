@@ -5,6 +5,7 @@ import com.github.thibstars.btsd.desktop.stations.StationsTable;
 import com.github.thibstars.btsd.irail.client.LiveBoardService;
 import java.awt.Dimension;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -47,6 +48,14 @@ public class LiveBoardController {
 
     protected void refreshLiveBoard(LiveBoardPanel liveBoardPanel, String id) {
         liveBoardService.getForStation(id, i18NController.getPreferredLocale().getLanguage())
+                .ifPresentOrElse(
+                        liveBoardPanel::update,
+                        () -> LOGGER.warn("Unable to refresh live board.")
+                );
+    }
+
+    public void refreshLiveBoard(LiveBoardPanel liveBoardPanel, String id, LocalTime localTime) {
+        liveBoardService.getForStation(id, i18NController.getPreferredLocale().getLanguage(), localTime)
                 .ifPresentOrElse(
                         liveBoardPanel::update,
                         () -> LOGGER.warn("Unable to refresh live board.")

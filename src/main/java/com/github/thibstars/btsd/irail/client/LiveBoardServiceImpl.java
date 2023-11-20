@@ -5,6 +5,8 @@ import com.github.thibstars.btsd.irail.exceptions.ClientException;
 import com.github.thibstars.btsd.irail.helper.LanguageService;
 import com.github.thibstars.btsd.irail.model.LiveBoard;
 import java.io.IOException;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -26,7 +28,9 @@ public class LiveBoardServiceImpl implements LiveBoardService {
 
     private static final String LANG_PLACEHOLDER = "${lang}";
 
-    private static final String URL = "https://api.irail.be/liveboard/?id=" + ID_PLACEHOLDER + "&arrdep=departure&lang=" + LANG_PLACEHOLDER + "&format=json&alerts=false";
+    private static final String TIME_PLACEHOLDER = "${time}";
+
+    private static final String URL = "https://api.irail.be/liveboard/?id=" + ID_PLACEHOLDER + "&arrdep=departure&lang=" + LANG_PLACEHOLDER + "&format=json&alerts=false&time=" + TIME_PLACEHOLDER;
 
     private final OkHttpClient client;
 
@@ -42,8 +46,13 @@ public class LiveBoardServiceImpl implements LiveBoardService {
 
     @Override
     public Optional<LiveBoard> getForStation(String id, String language) {
+        return getForStation(id, language, LocalTime.now());
+    }
+
+    @Override
+    public Optional<LiveBoard> getForStation(String id, String language, LocalTime localTime) {
         try {
-            LiveBoard liveBoard = fetchLiveBoard(id, language);
+            LiveBoard liveBoard = fetchLiveBoard(id, language, localTime);
 
             if (Stream.of(liveBoard.station(), liveBoard.stationInfo(), liveBoard.departures())
                     .allMatch(Objects::isNull)) {
@@ -58,11 +67,17 @@ public class LiveBoardServiceImpl implements LiveBoardService {
         }
     }
 
-    private LiveBoard fetchLiveBoard(String id, String language) throws IOException {
-        LOGGER.info("Fetching live board for station: {}", id);
+    private LiveBoard fetchLiveBoard(String id, String language, LocalTime localTime) throws IOException {
+        LOGGER.info("Fetching live board for station: {} and local time: {}", id, localTime);
+
+        String timeString = Optional.ofNullable(localTime)
+                .orElse(LocalTime.now())
+                .format(DateTimeFormatter.ofPattern("HHmm"));
 
         Request request = new Request.Builder()
-                .url(URL.replace(ID_PLACEHOLDER, id).replace(LANG_PLACEHOLDER, languageService.getLanguageOrFallback(language)))
+                .url(URL.replace(ID_PLACEHOLDER, id)
+                        .replace(LANG_PLACEHOLDER, languageService.getLanguageOrFallback(language))
+                        .replace(TIME_PLACEHOLDER, timeString))
                 .build();
 
         ResponseBody responseBody;
