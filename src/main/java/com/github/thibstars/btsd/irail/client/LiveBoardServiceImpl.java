@@ -5,7 +5,7 @@ import com.github.thibstars.btsd.irail.exceptions.ClientException;
 import com.github.thibstars.btsd.irail.helper.LanguageService;
 import com.github.thibstars.btsd.irail.model.LiveBoard;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Optional;
@@ -46,8 +46,13 @@ public class LiveBoardServiceImpl implements LiveBoardService {
 
     @Override
     public Optional<LiveBoard> getForStation(String id, String language) {
+        return getForStation(id, language, LocalTime.now());
+    }
+
+    @Override
+    public Optional<LiveBoard> getForStation(String id, String language, LocalTime localTime) {
         try {
-            LiveBoard liveBoard = fetchLiveBoard(id, language);
+            LiveBoard liveBoard = fetchLiveBoard(id, language, localTime);
 
             if (Stream.of(liveBoard.station(), liveBoard.stationInfo(), liveBoard.departures())
                     .allMatch(Objects::isNull)) {
@@ -62,10 +67,11 @@ public class LiveBoardServiceImpl implements LiveBoardService {
         }
     }
 
-    private LiveBoard fetchLiveBoard(String id, String language) throws IOException {
-        LOGGER.info("Fetching live board for station: {}", id);
+    private LiveBoard fetchLiveBoard(String id, String language, LocalTime localTime) throws IOException {
+        LOGGER.info("Fetching live board for station: {} and local time: {}", id, localTime);
 
-        String timeString = LocalDateTime.now()
+        String timeString = Optional.ofNullable(localTime)
+                .orElse(LocalTime.now())
                 .format(DateTimeFormatter.ofPattern("HHmm"));
 
         Request request = new Request.Builder()
