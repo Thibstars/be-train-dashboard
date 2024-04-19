@@ -62,6 +62,6 @@ class StationServiceImplTest {
         Assertions.assertNotNull(result, "Result must not be null.");
         Assertions.assertFalse(result.isEmpty(), "Result must not be empty.");
         Assertions.assertEquals(1, result.size(), "Result size must be correct.");
-        Assertions.assertEquals(station, result.stream().toList().get(0), "Result must match the expected.");
+        Assertions.assertEquals(station, result.stream().toList().getFirst(), "Result must match the expected.");
     }
 }
