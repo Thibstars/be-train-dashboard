@@ -2,7 +2,7 @@ package com.github.thibstars.btsd.desktop.liveboard;
 
 import com.github.thibstars.btsd.desktop.i18n.I18NController;
 import com.github.thibstars.btsd.desktop.listeners.LocaleChangeListener;
-import com.github.thibstars.btsd.irail.model.LiveBoard;
+import com.github.thibstars.jirail.model.LiveBoard;
 import java.awt.Dimension;
 import java.util.Locale;
 import javax.swing.JFrame;

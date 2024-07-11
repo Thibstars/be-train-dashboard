@@ -6,10 +6,10 @@ import com.github.thibstars.btsd.internal.I18NServiceImpl;
 import com.github.thibstars.btsd.internal.PreferencesService;
 import com.github.thibstars.btsd.internal.PreferencesServiceImpl;
 import com.github.thibstars.btsd.internal.PropertiesServiceImpl;
-import com.github.thibstars.btsd.irail.client.LiveBoardServiceImpl;
-import com.github.thibstars.btsd.irail.client.StationServiceImpl;
-import com.github.thibstars.btsd.irail.helper.LanguageService;
-import com.github.thibstars.btsd.irail.helper.LanguageServiceImpl;
+import com.github.thibstars.jirail.client.LiveBoardServiceImpl;
+import com.github.thibstars.jirail.client.StationServiceImpl;
+import com.github.thibstars.jirail.helper.LanguageService;
+import com.github.thibstars.jirail.helper.LanguageServiceImpl;
 import okhttp3.OkHttpClient;
 
 /**

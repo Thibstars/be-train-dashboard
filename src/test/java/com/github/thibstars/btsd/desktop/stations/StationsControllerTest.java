@@ -1,7 +1,7 @@
 package com.github.thibstars.btsd.desktop.stations;
 
 import com.github.thibstars.btsd.desktop.liveboard.LiveBoardController;
-import com.github.thibstars.btsd.irail.client.StationService;
+import com.github.thibstars.jirail.client.StationService;
 import java.awt.Dimension;
 import javax.swing.DefaultListSelectionModel;
 import org.junit.jupiter.api.Test;

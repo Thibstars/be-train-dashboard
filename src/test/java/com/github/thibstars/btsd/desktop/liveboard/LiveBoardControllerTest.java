@@ -1,8 +1,8 @@
 package com.github.thibstars.btsd.desktop.liveboard;
 
 import com.github.thibstars.btsd.desktop.i18n.I18NController;
-import com.github.thibstars.btsd.irail.client.LiveBoardService;
-import com.github.thibstars.btsd.irail.model.LiveBoard;
+import com.github.thibstars.jirail.client.LiveBoardService;
+import com.github.thibstars.jirail.model.LiveBoard;
 import java.awt.Dimension;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

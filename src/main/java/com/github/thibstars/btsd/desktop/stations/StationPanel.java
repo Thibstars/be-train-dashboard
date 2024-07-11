@@ -3,7 +3,7 @@ package com.github.thibstars.btsd.desktop.stations;
 import com.github.thibstars.btsd.desktop.components.CaptionedLabel;
 import com.github.thibstars.btsd.desktop.i18n.I18NController;
 import com.github.thibstars.btsd.desktop.listeners.LocaleChangeListener;
-import com.github.thibstars.btsd.irail.model.Station;
+import com.github.thibstars.jirail.model.Station;
 import java.awt.GridLayout;
 import java.util.Locale;
 import javax.swing.BorderFactory;
