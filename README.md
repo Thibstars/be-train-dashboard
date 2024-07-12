@@ -10,3 +10,6 @@ Desktop application aggregating data of Belgian train stations.
 
 ![The main view of the application.](./images/main_frame.png "Main view")
 ![The live board.](./images/live_board.png "Live Board")
+
+## JiRail
+This application makes use of the [JiRail library](https://github.com/Thibstars/jirail) for fetching station and liveboard data.
