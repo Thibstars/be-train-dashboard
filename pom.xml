@@ -22,7 +22,7 @@
         <jirail.version>1.0.0</jirail.version>
         <LGoodDatePicker.version>11.2.1</LGoodDatePicker.version>
 
-        <junit-jupiter.version>5.10.0</junit-jupiter.version>
+        <junit-jupiter.version>6.0.0</junit-jupiter.version>
         <mockito-core.version>5.6.0</mockito-core.version>
     </properties>
 
