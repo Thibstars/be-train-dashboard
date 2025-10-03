@@ -25,6 +25,13 @@
 
         <junit-jupiter.version>6.0.0</junit-jupiter.version>
         <mockito-core.version>5.20.0</mockito-core.version>
+
+        <!-- Bundled JRE (Windows x64, Java 21) configuration -->
+        <bundled.jre.url>https://cdn.azul.com/zulu/bin/zulu21.36.17-ca-jre21.0.4-win_x64.zip</bundled.jre.url>
+        <bundled.jre.zip>${project.build.directory}\jre.zip</bundled.jre.zip>
+        <bundled.jre.dirName>zulu21.36.17-ca-jre21.0.4-win_x64</bundled.jre.dirName>
+        <bundled.jre.targetDir>${project.build.directory}\jre</bundled.jre.targetDir>
+        <skipJreBundle>false</skipJreBundle>
     </properties>
 
     <dependencies>
@@ -96,6 +103,30 @@
                 </executions>
             </plugin>
 
+            <!-- Download and unpack a Windows x64 JRE 21 into target/jre -->
+            <plugin>
+                <groupId>com.googlecode.maven-download-plugin</groupId>
+                <artifactId>download-maven-plugin</artifactId>
+                <version>1.9.0</version>
+                <executions>
+                    <execution>
+                        <id>download-bundled-jre</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skipJreBundle}</skip>
+                            <url>${bundled.jre.url}</url>
+                            <outputFileName>jre.zip</outputFileName>
+                            <unpack>true</unpack>
+                            <overwrite>false</overwrite>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- Create native Windows .exe wrapper from the fat JAR -->
             <plugin>
                 <groupId>com.akathist.maven.plugins.launch4j</groupId>
@@ -118,8 +149,8 @@
                             </classPath>
                             <jre>
                                 <minVersion>21.0.0</minVersion>
-                                <!-- Use system JRE/JDK from JAVA_HOME if available -->
-                                <path>%JAVA_HOME%</path>
+                                <!-- Prefer the bundled JRE extracted next to the EXE -->
+                                <path>${bundled.jre.dirName}</path>
                                 <requires64Bit>true</requires64Bit>
                             </jre>
                             <versionInfo>
