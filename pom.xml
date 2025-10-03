@@ -94,6 +94,66 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Create native Windows .exe wrapper from the fat JAR -->
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>2.5.0</version>
+                <executions>
+                    <execution>
+                        <id>l4j-clui</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Use the shaded JAR built by the assembly plugin -->
+                            <jar>${project.build.directory}/${project.artifactId}-${project.version}-jar-with-dependencies.jar</jar>
+                            <outfile>${project.build.directory}/${project.artifactId}-${project.version}.exe</outfile>
+                            <headerType>gui</headerType>
+                            <classPath>
+                                <mainClass>com.github.thibstars.btsd.desktop.BelgianTrainStationDashboard</mainClass>
+                            </classPath>
+                            <jre>
+                                <minVersion>21.0.0</minVersion>
+                                <!-- Use system JRE/JDK from JAVA_HOME if available -->
+                                <path>%JAVA_HOME%</path>
+                                <requires64Bit>true</requires64Bit>
+                            </jre>
+                            <versionInfo>
+                                <fileVersion>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.0</fileVersion>
+                                <txtFileVersion>${project.version}</txtFileVersion>
+                                <productVersion>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.0</productVersion>
+                                <txtProductVersion>${project.version}</txtProductVersion>
+                                <fileDescription>${project.name}</fileDescription>
+                                <productName>${project.name}</productName>
+                                <internalName>${project.artifactId}</internalName>
+                                <originalFilename>${project.artifactId}.exe</originalFilename>
+                                <companyName>${project.groupId}</companyName>
+                            </versionInfo>
+                            <messages>
+                                <startupErr>Failed to start ${project.name}. Please ensure Java 21 (64-bit) is installed.</startupErr>
+                                <bundledJreErr>Java Runtime not found. Please install Java 21 (64-bit).</bundledJreErr>
+                            </messages>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <id>parse-version</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>parse-version</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
