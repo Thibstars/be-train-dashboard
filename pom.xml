@@ -11,6 +11,7 @@
     <name>Belgian Train Station Dashboard</name>
     <description>Desktop application aggregating data of Belgian train stations.</description>
 
+    <inceptionYear>2023</inceptionYear>
     <packaging>jar</packaging>
 
     <properties>
@@ -134,7 +135,7 @@
                             </versionInfo>
                             <messages>
                                 <startupErr>Failed to start ${project.name}. Please ensure Java 21 (64-bit) is installed.</startupErr>
-                                <bundledJreErr>Java Runtime not found. Please install Java 21 (64-bit).</bundledJreErr>
+                                <jreNotFoundErr>Java Runtime not found. Please install Java 21 (64-bit).</jreNotFoundErr>
                             </messages>
                         </configuration>
                     </execution>
