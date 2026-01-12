@@ -10,9 +10,9 @@ import com.github.thibstars.jirail.model.Departure;
 import com.github.thibstars.jirail.model.Departures;
 import com.github.thibstars.jirail.model.LiveBoard;
 import com.github.thibstars.jirail.model.Occupancy;
-import com.github.thibstars.jirail.model.Station;
-import com.github.thibstars.jirail.model.Vehicle;
-import com.github.thibstars.jirail.model.Platform;
+import com.github.thibstars.jirail.model.StationInfo;
+import com.github.thibstars.jirail.model.PlatformInfo;
+import com.github.thibstars.jirail.model.VehicleInfo;
 import java.awt.BorderLayout;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
@@ -106,22 +106,22 @@ public class LiveBoardPanel extends JPanel implements LocaleChangeListener {
 
     private void initDepartures(Departures departures) {
         departures.departures().forEach(departure -> {
-            Station station = departure.stationInfo();
+            StationInfo stationInfo = departure.stationInfo();
             Date time = new Date(Long.parseLong(departure.time()) * MILLISECONDS_IN_SECOND);
-            int delay = departure.delay() / SECONDS_IN_MINUTE;
-            Vehicle vehicle = departure.vehicleInfo();
-            Platform platform = departure.platformInfo();
+            long delay = departure.delay() / SECONDS_IN_MINUTE;
+            VehicleInfo vehicleInfo = departure.vehicleInfo();
+            PlatformInfo platformInfo = departure.platformInfo();
             Occupancy occupancy = departure.occupancy();
             departuresModel.addRow(new Object[] {
                     departure.id(),
                     delay,
                     departure.station(),
-                    station != null ? station.id() : "",
+                    stationInfo != null ? stationInfo.id() : "",
                     liveBoardController.formatDateTime(LocalDateTime.ofInstant(time.toInstant(), ZoneId.systemDefault())),
                     departure.vehicle(),
-                    vehicle != null ? vehicle.name() : "",
+                    vehicleInfo != null ? vehicleInfo.name() : "",
                     departure.platform(),
-                    platform != null ? platform.name() : "",
+                    platformInfo != null ? platformInfo.name() : "",
                     departure.canceled(),
                     departure.left(),
                     departure.departureConnection(),

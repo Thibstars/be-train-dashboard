@@ -2,7 +2,7 @@ package com.github.thibstars.btsd.desktop.stations;
 
 import com.github.thibstars.btsd.desktop.i18n.I18NController;
 import com.github.thibstars.btsd.desktop.listeners.LocaleChangeListener;
-import com.github.thibstars.jirail.model.Station;
+import com.github.thibstars.jirail.model.StationInfo;
 import java.awt.HeadlessException;
 import java.util.List;
 import java.util.Locale;
@@ -27,7 +27,7 @@ public class StationsTable extends JTable implements LocaleChangeListener {
 
     private final StationsTableModel model;
 
-    private transient Set<Station> stations;
+    private transient Set<StationInfo> stationInfoSet;
 
     private transient StationsController stationsController;
 
@@ -47,7 +47,7 @@ public class StationsTable extends JTable implements LocaleChangeListener {
         setFillsViewportHeight(true);
     }
 
-    public Optional<Station> getStationInRow(int rowIndex) {
+    public Optional<StationInfo> getStationInRow(int rowIndex) {
         String stationId;
         try {
             stationId = super.getValueAt(rowIndex, 0).toString();
@@ -55,13 +55,13 @@ public class StationsTable extends JTable implements LocaleChangeListener {
             return Optional.empty();
         }
 
-        return stations.stream()
+        return stationInfoSet.stream()
                 .filter(station -> station.id().equals(stationId))
                 .findFirst();
     }
 
-    protected void setStations(Set<Station> stations) {
-        this.stations = stations;
+    protected void setStations(Set<StationInfo> stations) {
+        this.stationInfoSet = stations;
         model.setRowCount(0);
         stations.forEach(station -> model.addRow(new Object[] {station.id(), station.name()}));
         model.fireTableDataChanged();
