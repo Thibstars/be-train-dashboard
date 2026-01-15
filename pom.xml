@@ -24,7 +24,7 @@
         <LGoodDatePicker.version>11.2.1</LGoodDatePicker.version>
 
         <junit-jupiter.version>6.0.0</junit-jupiter.version>
-        <mockito-core.version>5.20.0</mockito-core.version>
+        <mockito-core.version>5.21.0</mockito-core.version>
 
         <!-- Bundled JRE (Windows x64, Java 21) configuration -->
         <bundled.jre.url>https://cdn.azul.com/zulu/bin/zulu21.36.17-ca-jre21.0.4-win_x64.zip</bundled.jre.url>
