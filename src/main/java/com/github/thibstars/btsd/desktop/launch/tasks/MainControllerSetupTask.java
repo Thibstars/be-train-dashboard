@@ -29,7 +29,7 @@ public class MainControllerSetupTask extends Creator<MainController> implements 
 
         Controllers controllers = controllersSetupTask.getCreatable();
         I18NController i18NController = controllers.i18NController();
-        MainFrame mainFrame = new MainFrame();
+        MainFrame mainFrame = createMainFrame();
         i18NController.addListener(mainFrame);
 
         this.creatable = new MainController(
@@ -41,5 +41,9 @@ public class MainControllerSetupTask extends Creator<MainController> implements 
                 controllers.preferencesController());
 
         completeTask(countDownLatchContext);
+    }
+
+    protected MainFrame createMainFrame() {
+        return new MainFrame();
     }
 }

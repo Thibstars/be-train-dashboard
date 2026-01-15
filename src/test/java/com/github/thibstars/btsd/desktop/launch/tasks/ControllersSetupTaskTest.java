@@ -1,6 +1,10 @@
 package com.github.thibstars.btsd.desktop.launch.tasks;
 
+import com.github.thibstars.btsd.desktop.about.AboutDialog;
+import com.github.thibstars.btsd.desktop.issue.ReportIssueDialog;
 import com.github.thibstars.btsd.desktop.launch.CountDownLatchContext;
+import com.github.thibstars.btsd.desktop.preferences.PreferencesDialog;
+import com.github.thibstars.btsd.desktop.stations.StationsTable;
 import com.github.thibstars.btsd.internal.I18NService;
 import com.github.thibstars.btsd.internal.PropertiesService;
 import com.github.thibstars.btsd.internal.SupportedLocale;
@@ -20,6 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * @author Thibault Helsmoortel
  */
 @ExtendWith(MockitoExtension.class)
+@org.mockito.junit.jupiter.MockitoSettings(strictness = org.mockito.quality.Strictness.LENIENT)
 class ControllersSetupTaskTest {
 
     private ControllersSetupTask controllersSetupTask;
@@ -35,11 +40,15 @@ class ControllersSetupTaskTest {
 
     @BeforeEach
     void setUp() {
-        this.controllersSetupTask = new ControllersSetupTask(
+        this.controllersSetupTask = Mockito.spy(new ControllersSetupTask(
                 countDownLatchContext,
                 dependentCountDownLatchContext,
                 servicesSetupTask
-        );
+        ));
+        Mockito.doReturn(Mockito.mock(AboutDialog.class)).when(controllersSetupTask).createAboutDialog();
+        Mockito.doReturn(Mockito.mock(StationsTable.class)).when(controllersSetupTask).createStationsTable();
+        Mockito.doReturn(Mockito.mock(ReportIssueDialog.class)).when(controllersSetupTask).createReportIssueDialog();
+        Mockito.doReturn(Mockito.mock(PreferencesDialog.class)).when(controllersSetupTask).createPreferencesDialog();
     }
 
     @Test
@@ -54,6 +63,9 @@ class ControllersSetupTaskTest {
         Mockito.when(i18NService.getMessage(ArgumentMatchers.anyString()))
                 .thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
         Mockito.when(servicesSetupTask.getCreatable().i18NService()).thenReturn(i18NService);
+        Mockito.when(servicesSetupTask.getCreatable().preferencesService()).thenReturn(Mockito.mock(com.github.thibstars.btsd.internal.PreferencesService.class));
+        Mockito.when(servicesSetupTask.getCreatable().liveBoardService()).thenReturn(Mockito.mock(com.github.thibstars.jirail.client.LiveBoardService.class));
+        Mockito.when(servicesSetupTask.getCreatable().stationService()).thenReturn(Mockito.mock(com.github.thibstars.jirail.client.StationService.class));
 
         Thread thread = new Thread(controllersSetupTask);
         thread.start();

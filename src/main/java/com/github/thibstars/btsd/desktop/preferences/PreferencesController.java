@@ -23,15 +23,19 @@ public class PreferencesController {
     private final I18NController i18NController;
 
     public PreferencesController(PreferencesService preferencesService, I18NController i18NController) {
+        this(preferencesService, i18NController, null);
+    }
+
+    public PreferencesController(PreferencesService preferencesService, I18NController i18NController, PreferencesDialog preferencesDialog) {
         this.preferencesService = preferencesService;
         this.i18NController = i18NController;
-        this.preferencesDialog = new PreferencesDialog(this);
-        i18NController.addListener(preferencesDialog);
+        this.preferencesDialog = preferencesDialog != null ? preferencesDialog : new PreferencesDialog(this);
+        i18NController.addListener(this.preferencesDialog);
 
         Locale preferredLocale = i18NController.getPreferredLocale();
-        preferencesDialog.setSelectedLocale(SupportedLocale.from(preferredLocale).orElseThrow());
+        this.preferencesDialog.setSelectedLocale(SupportedLocale.from(preferredLocale).orElseThrow());
 
-        preferencesDialog.setPreferredDateTimeFormat(preferencesService.getDateTimeFormatPreference());
+        this.preferencesDialog.setPreferredDateTimeFormat(preferencesService.getDateTimeFormatPreference());
     }
 
     protected void changeLocale(Locale locale) {

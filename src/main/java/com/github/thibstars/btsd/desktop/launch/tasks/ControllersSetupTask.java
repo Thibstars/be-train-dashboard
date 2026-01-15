@@ -8,6 +8,7 @@ import com.github.thibstars.btsd.desktop.issue.ReportIssueDialog;
 import com.github.thibstars.btsd.desktop.launch.CountDownLatchContext;
 import com.github.thibstars.btsd.desktop.liveboard.LiveBoardController;
 import com.github.thibstars.btsd.desktop.preferences.PreferencesController;
+import com.github.thibstars.btsd.desktop.preferences.PreferencesDialog;
 import com.github.thibstars.btsd.desktop.stations.StationsController;
 import com.github.thibstars.btsd.desktop.stations.StationsTable;
 import com.github.thibstars.btsd.internal.PropertiesService;
@@ -40,25 +41,43 @@ public class ControllersSetupTask extends Creator<Controllers> implements Runnab
 
         LiveBoardController liveBoardController = new LiveBoardController(services.liveBoardService(), i18NController);
         PropertiesService propertiesService = services.propertiesService();
-
-        AboutDialog aboutDialog = new AboutDialog();
+        
+        AboutDialog aboutDialog = createAboutDialog();
         i18NController.addListener(aboutDialog);
-        StationsTable stationsTable = new StationsTable();
+        StationsTable stationsTable = createStationsTable();
         i18NController.addListener(stationsTable);
-        ReportIssueDialog reportIssueDialog = new ReportIssueDialog();
+        ReportIssueDialog reportIssueDialog = createReportIssueDialog();
         i18NController.addListener(reportIssueDialog);
 
+        PreferencesDialog preferencesDialog = createPreferencesDialog();
+        PreferencesController preferencesController = new PreferencesController(services.preferencesService(), i18NController, preferencesDialog);
         this.creatable = new Controllers(
           new AboutController(propertiesService, aboutDialog),
                 liveBoardController,
           new StationsController(stationsTable, services.stationService(), liveBoardController, i18NController),
                 new ReportIssueController(propertiesService, reportIssueDialog),
                 i18NController,
-                new PreferencesController(services.preferencesService(), i18NController)
+                preferencesController
         );
 
         i18NController.initLocale();
 
         completeTask(countDownLatchContext);
+    }
+
+    protected AboutDialog createAboutDialog() {
+        return new AboutDialog();
+    }
+
+    protected StationsTable createStationsTable() {
+        return new StationsTable();
+    }
+
+    protected ReportIssueDialog createReportIssueDialog() {
+        return new ReportIssueDialog();
+    }
+
+    protected PreferencesDialog createPreferencesDialog() {
+        return null;
     }
 }

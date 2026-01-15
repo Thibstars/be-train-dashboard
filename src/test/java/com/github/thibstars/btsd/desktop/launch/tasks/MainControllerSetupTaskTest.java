@@ -2,6 +2,7 @@ package com.github.thibstars.btsd.desktop.launch.tasks;
 
 import com.github.thibstars.btsd.desktop.launch.CountDownLatchContext;
 import com.github.thibstars.btsd.desktop.main.MainController;
+import com.github.thibstars.btsd.desktop.main.MainFrame;
 import javax.swing.JScrollPane;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,11 +32,12 @@ class MainControllerSetupTaskTest {
 
     @BeforeEach
     void setUp() {
-        this.mainControllerSetupTask = new MainControllerSetupTask(
+        this.mainControllerSetupTask = Mockito.spy(new MainControllerSetupTask(
                 countDownLatchContext,
                 dependentCountDownLatchContext,
                 controllersSetupTask
-        );
+        ));
+        Mockito.doReturn(Mockito.mock(MainFrame.class)).when(mainControllerSetupTask).createMainFrame();
     }
 
     @Test

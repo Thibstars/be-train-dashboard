@@ -22,6 +22,9 @@ class PreferencesControllerTest {
 
     @Mock
     private I18NController i18NController;
+    
+    @Mock
+    private PreferencesDialog preferencesDialog;
 
     private PreferencesController preferencesController;
 
@@ -30,7 +33,7 @@ class PreferencesControllerTest {
         Locale preferredLocale = SupportedLocale.DUTCH.getLocale();
         Mockito.when(i18NController.getPreferredLocale()).thenReturn(preferredLocale);
 
-        this.preferencesController = new PreferencesController(preferencesService, i18NController);
+        this.preferencesController = new PreferencesController(preferencesService, i18NController, preferencesDialog);
     }
 
     @Test
