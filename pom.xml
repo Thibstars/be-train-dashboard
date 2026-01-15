@@ -23,7 +23,7 @@
         <jirail.version>1.0.3</jirail.version>
         <LGoodDatePicker.version>11.2.1</LGoodDatePicker.version>
 
-        <junit-jupiter.version>6.0.0</junit-jupiter.version>
+        <junit-jupiter.version>6.0.2</junit-jupiter.version>
         <mockito-core.version>5.20.0</mockito-core.version>
 
         <!-- Bundled JRE (Windows x64, Java 21) configuration -->
